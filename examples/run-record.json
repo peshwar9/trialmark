@@ -2,7 +2,7 @@
   "test_set": {
     "name": "contract-questions",
     "version": "2026-11-05",
-    "hash": "sha256:0d23c14ca92d03398c57c1796c52a3e0473ffe491adfb011760fd7aa66a4897f"
+    "hash": "jcs-sha256:0d23c14ca92d03398c57c1796c52a3e0473ffe491adfb011760fd7aa66a4897f"
   },
   "pass_mark": {
     "metric": "correct",
@@ -12,7 +12,7 @@
     },
     "choose": "cheapest"
   },
-  "pass_mark_hash": "sha256:a582cc474615810dc62428eb2969ecc0747ae18891468884ca6db8aaef63ca9e",
+  "pass_mark_hash": "jcs-sha256:96be1f3cebc1a7fb82fa015f4f46677816887dbf9fb98b4864325b02d5e7f837",
   "pass_mark_set_at": "2026-11-05T00:00:00+00:00",
   "models": [
     {
@@ -36,7 +36,7 @@
   ],
   "repeats": 3,
   "run_id": "example",
-  "trialmark_version": "0.2.0",
+  "trialmark_version": "0.3.0",
   "judge": {
     "model": "example-judge",
     "prompt_version": "1"

@@ -6,7 +6,7 @@
   "models": [
     { "id": "perfect-model", "runner": "echo", "settings": { "cost_usd": 0.03 } },
     { "id": "weak-on-multi-part", "runner": "echo", "settings": { "wrong_tags": ["multi-part"], "cost_usd": 0.003 } },
-    { "id": "my-function", "runner": "python", "settings": { "callable": "examples/my_model.py:answer" } }
+    { "id": "my-function", "runner": "python", "settings": { "callable": "my_model.py:answer" } }
   ],
   "scorers": ["exact-match"],
   "output": "config-run-record.json"

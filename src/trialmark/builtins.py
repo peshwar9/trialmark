@@ -49,15 +49,17 @@ class PythonRunner:
 
     Model settings:
       callable: "module:function", for a module Python can import, or
-                "path/to/file.py:function", for a file, relative to the folder
+                "path/to/file.py:function", for a file. A relative file path is
+                looked up beside the configuration file, then in the folder
                 Trialmark is run from.
 
     The function is called as function(model_id, case_input, settings) and returns
     either the output or a trialmark.RunOutput.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, base_dir: Path | None = None) -> None:
         self._cache: dict[str, Any] = {}
+        self.base_dir = base_dir
 
     def _function(self, spec: str):
         if spec not in self._cache:
@@ -65,7 +67,10 @@ class PythonRunner:
             if not module or not name:
                 raise ValueError(f"callable must look like 'module:function', not '{spec}'.")
             if module.endswith(".py"):
-                loaded = importlib.util.spec_from_file_location(Path(module).stem, module)
+                path = Path(module)
+                if not path.is_absolute() and self.base_dir is not None and (self.base_dir / path).exists():
+                    path = self.base_dir / path
+                loaded = importlib.util.spec_from_file_location(path.stem, path)
                 if loaded is None or loaded.loader is None:
                     raise ValueError(f"Cannot load '{module}'.")
                 mod = importlib.util.module_from_spec(loaded)

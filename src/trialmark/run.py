@@ -31,7 +31,7 @@ def _one(
     latency = out.latency_ms if out.latency_ms is not None else int((time.perf_counter() - t0) * 1000)
 
     metrics: dict[str, float] = {}
-    note = ""
+    notes = [out.note] if out.note else []
     for scorer in scorers:
         if out.error is not None:
             metrics.update({m: 0.0 for m in scorer.metrics})
@@ -40,8 +40,13 @@ def _one(
             got = scorer.score(case, out.output)
         except Exception as e:
             metrics.update({m: 0.0 for m in scorer.metrics})
-            note = f"scorer {type(scorer).__name__} failed: {e}"[:500]
+            notes.append(f"scorer {type(scorer).__name__} failed: {e}"[:500])
             continue
+        got = dict(got)
+        if isinstance(got.get("note"), str):
+            if got["note"]:
+                notes.append(got["note"][:500])
+            del got["note"]
         for k, v in got.items():
             v = float(v)
             if not 0.0 <= v <= 1.0:
@@ -59,7 +64,7 @@ def _one(
         input_tokens=out.input_tokens,
         output_tokens=out.output_tokens,
         error=out.error,
-        note=note,
+        note=" ".join(notes),
     )
 
 
@@ -86,6 +91,9 @@ def run_trial(
     for m in models:
         if m.runner not in runners:
             raise ValueError(f"Model '{m.id}' names runner '{m.runner}', which was not provided.")
+    if judge is None:
+        # A scorer that grades with a model describes its judge, for the record.
+        judge = next((s.judge for s in scorers if isinstance(getattr(s, "judge", None), dict)), None)
     record = RunRecord.start(test_set, pass_mark, models, repeats=repeats, judge=judge, environment=environment)
     record.plugins = plugin_versions or {
         "runners": {name: type(r).__name__ for name, r in runners.items()},
@@ -145,13 +153,13 @@ def load_config(path: str | Path) -> Config:
         models.append(ModelEntry(id=m["id"], provider=m.get("provider", ""), settings=m.get("settings", {}), runner=m["runner"]))
 
     runner_options = data.get("runners", {})
-    runners = {name: make_runner(name, runner_options.get(name)) for name in sorted({m.runner for m in models})}
+    runners = {name: make_runner(name, runner_options.get(name), base) for name in sorted({m.runner for m in models})}
 
     scorers = []
     scorer_versions = {}
     for s in data["scorers"]:
         s = {"name": s} if isinstance(s, str) else s
-        scorers.append(make_scorer(s["name"], s.get("options")))
+        scorers.append(make_scorer(s["name"], s.get("options"), base))
         scorer_versions[s["name"]] = version_of("scorer", s["name"])
 
     return Config(

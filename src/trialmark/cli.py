@@ -61,9 +61,9 @@ def _report(args: argparse.Namespace) -> int:
 def _gate(args: argparse.Namespace) -> int:
     record = load_record(args.record)
     if args.test_set:
-        expected = load_with(args.test_set).hash
-        if expected != record.test_set["hash"]:
-            print(f"FAIL: the run used test set {record.test_set['hash']}, not {expected}.")
+        expected = load_with(args.test_set)
+        if not expected.matches(record.test_set["hash"]):
+            print(f"FAIL: the run used test set {record.test_set['hash']}, not {expected.hash}.")
             return 1
     d = decision(record)
     v = d.verdict_for(args.model)
@@ -75,6 +75,13 @@ def _gate(args: argparse.Namespace) -> int:
         return 0
     print(f"FAIL: {args.model}: {'; '.join(v.reasons)}")
     return 1
+
+
+def _schema(args: argparse.Namespace) -> int:
+    from importlib import resources
+
+    print(resources.files("trialmark").joinpath(f"schemas/{args.name}.schema.json").read_text(encoding="utf-8"))
+    return 0
 
 
 def _plugins(args: argparse.Namespace) -> int:
@@ -117,6 +124,10 @@ def main(argv: list[str] | None = None) -> int:
     s.add_argument("--model", required=True)
     s.add_argument("--test-set", help="also check that the run used this exact test set")
     s.set_defaults(fn=_gate)
+
+    s = sub.add_parser("schema", help="print the JSON Schema of a Trialmark file format")
+    s.add_argument("name", choices=["testset", "passmark", "run-record"])
+    s.set_defaults(fn=_schema)
 
     s = sub.add_parser("plugins", help="list the runners, scorers, loaders and reports Trialmark can find")
     s.set_defaults(fn=_plugins)

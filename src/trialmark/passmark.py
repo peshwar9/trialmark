@@ -17,11 +17,10 @@ chosen. Points are percentage points of a score between 0 and 1.
 
 from __future__ import annotations
 
-import hashlib
 from dataclasses import dataclass, field
 from typing import Any
 
-from .testset import canonical_json
+from .canonical import digest, matches
 
 CHOOSE_RULES = ("cheapest", "fastest", "best")
 
@@ -44,7 +43,11 @@ class PassMark:
 
     @property
     def hash(self) -> str:
-        return "sha256:" + hashlib.sha256(canonical_json(self.to_dict()).encode("utf-8")).hexdigest()
+        return digest(self.to_dict())
+
+    def matches(self, stored_hash: str) -> bool:
+        """Whether a hash recorded earlier, by any Trialmark version, is this pass mark's hash."""
+        return matches(stored_hash, self.to_dict())
 
 
 def parse_pass_mark(data: dict[str, Any]) -> PassMark:

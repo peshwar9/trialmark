@@ -137,7 +137,7 @@ def test_csv_loader_matches_json(tmp_path):
 
 
 def test_unknown_plugins_list_what_exists():
-    with pytest.raises(ValueError, match="Available: echo, python"):
+    with pytest.raises(ValueError, match="Available: anthropic, echo, openai, python"):
         make_runner("nonexistent")
 
 

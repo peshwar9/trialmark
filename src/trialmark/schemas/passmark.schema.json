@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/peshwar9/trialmark/schemas/passmark.schema.json",
+  "title": "Trialmark pass mark",
+  "description": "The decision rule, fixed before the run. Its hash is the canonical JSON (RFC 8785) of these four fields, with tolerance_points and every floor as numbers.",
+  "type": "object",
+  "required": ["metric"],
+  "properties": {
+    "metric": { "type": "string", "description": "The score the decision rests on." },
+    "tolerance_points": { "type": "number", "minimum": 0, "description": "Percentage points below the best model that still pass." },
+    "floors": { "type": "object", "additionalProperties": { "type": "number", "minimum": 0, "maximum": 1 } },
+    "choose": { "enum": ["cheapest", "fastest", "best"] }
+  },
+  "additionalProperties": false
+}

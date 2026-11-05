@@ -12,16 +12,18 @@ A test set is a JSON file:
     }
 
 The hash covers the cases only, so a rerun can prove it used exactly the same
-cases even if the set was renamed.
+cases even if the set was renamed. It uses canonical JSON (RFC 8785), so other
+languages can compute the same hash (see canonical.py).
 """
 
 from __future__ import annotations
 
-import hashlib
 import json
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
+
+from .canonical import digest, matches
 
 
 @dataclass(frozen=True)
@@ -44,20 +46,23 @@ class TestSet:
     def hash(self) -> str:
         return hash_cases(self.cases)
 
+    def matches(self, stored_hash: str) -> bool:
+        """Whether a hash recorded earlier, by any Trialmark version, is this set's hash."""
+        return matches(stored_hash, _case_rows(self.cases))
+
     def tags(self) -> list[str]:
         return sorted({t for c in self.cases for t in c.tags})
 
 
-def canonical_json(value: Any) -> str:
-    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
-
-
-def hash_cases(cases: tuple[Case, ...] | list[Case]) -> str:
-    rows = sorted(
+def _case_rows(cases: tuple[Case, ...] | list[Case]) -> list[dict[str, Any]]:
+    return sorted(
         ({"id": c.id, "input": c.input, "reference": c.reference, "tags": sorted(c.tags)} for c in cases),
         key=lambda r: r["id"],
     )
-    return "sha256:" + hashlib.sha256(canonical_json(rows).encode("utf-8")).hexdigest()
+
+
+def hash_cases(cases: tuple[Case, ...] | list[Case]) -> str:
+    return digest(_case_rows(cases))
 
 
 def parse_test_set(data: dict[str, Any]) -> TestSet:

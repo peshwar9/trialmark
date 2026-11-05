@@ -140,7 +140,8 @@ def test_round_trip(tmp_path):
 def test_example_record_and_cli(capsys):
     ts = load_test_set(EXAMPLES / "testset.json")
     record = load_record(EXAMPLES / "run-record.json")
-    assert record.test_set["hash"] == ts.hash
+    assert ts.matches(record.test_set["hash"])
+    assert record.test_set["hash"].startswith("jcs-sha256:")
     assert decision(record).chosen == "medium-model"
     assert "Tag: multi-part" in text_report(record, by_tag=True)
     path = str(EXAMPLES / "run-record.json")
@@ -148,3 +149,13 @@ def test_example_record_and_cli(capsys):
     assert main(["gate", path, "--model", "small-model"]) == 1
     assert main(["validate", str(EXAMPLES / "testset.json")]) == 0
     capsys.readouterr()
+
+
+def test_records_with_the_older_hash_still_verify():
+    # Written by Trialmark 0.2, whose hashes used Python's sorted json.dumps.
+    record = load_record(Path(__file__).parent / "fixtures" / "record-0.2.json")
+    assert record.test_set["hash"].startswith("sha256:")
+    assert load_test_set(EXAMPLES / "testset.json").matches(record.test_set["hash"])
+    assert decision(record).chosen == "medium-model"
+    path = str(Path(__file__).parent / "fixtures" / "record-0.2.json")
+    assert main(["gate", path, "--model", "medium-model", "--test-set", str(EXAMPLES / "testset.json")]) == 0

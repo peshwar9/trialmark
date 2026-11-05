@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "trialmark"
-version = "0.2.0"
+version = "0.3.0"
 description = "Model acceptance tests for language models: your own test set, a pass mark set before the run, and a record anyone can rerun."
 readme = "README.md"
 license = "Apache-2.0"
@@ -22,7 +22,9 @@ classifiers = [
 dependencies = []
 
 [project.optional-dependencies]
-dev = ["pytest>=8"]
+anthropic = ["anthropic>=2.5"]
+openai = ["openai>=3.40"]
+dev = ["pytest>=8", "jsonschema>=4.18"]
 
 [project.urls]
 Homepage = "https://github.com/peshwar9/trialmark"

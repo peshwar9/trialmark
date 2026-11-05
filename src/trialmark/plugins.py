@@ -19,6 +19,7 @@ can also be passed directly, without registering it at all.
 
 from __future__ import annotations
 
+import inspect
 from dataclasses import dataclass
 from importlib import metadata
 from pathlib import Path
@@ -44,7 +45,8 @@ class RunOutput:
     """What a runner returns for one case.
 
     Leave latency_ms as None to let Trialmark time the call. Set error instead of
-    raising when the model call failed in a way the record should show.
+    raising when the model call failed in a way the record should show. A note is
+    kept on the result, for anything a reader of the record should know.
     """
 
     output: Any
@@ -53,6 +55,7 @@ class RunOutput:
     input_tokens: int = 0
     output_tokens: int = 0
     error: str | None = None
+    note: str = ""
 
 
 @runtime_checkable
@@ -71,8 +74,14 @@ class Scorer(Protocol):
     """Scores one output against the case's reference.
 
     `metrics` names every metric `score` can return, each between 0 and 1, so a
-    failed call can be scored 0 on all of them. Like a runner, a scorer is
-    constructed once per run and may be called from several threads.
+    failed call can be scored 0 on all of them. `score` may also return a short
+    explanation under the key "note", which is kept on the result. A scorer that
+    grades with a model may set an attribute `judge`, a dict describing the judge,
+    which the run record stores. Like a runner, a scorer is constructed once per
+    run and may be called from several threads.
+
+    A plugin class whose constructor accepts `base_dir` receives the folder of the
+    configuration file, so it can resolve relative paths in its options.
     """
 
     metrics: tuple[str, ...]
@@ -108,7 +117,7 @@ def _entry_points(kind: str) -> dict[str, metadata.EntryPoint]:
 
 def _ensure_builtins() -> None:
     # Importing the modules runs their @builtin decorators.
-    from . import builtins  # noqa: F401
+    from . import builtins, providers  # noqa: F401
 
 
 def find(kind: str, name: str) -> Any:
@@ -153,15 +162,27 @@ def available() -> dict[str, list[tuple[str, str]]]:
     return out
 
 
-def make_runner(name: str, options: dict[str, Any] | None = None) -> Runner:
-    obj = find("runner", name)(**(options or {}))
+def _construct(cls: Any, options: dict[str, Any] | None, base_dir: Path | None) -> Any:
+    options = dict(options or {})
+    if base_dir is not None and "base_dir" not in options:
+        try:
+            accepts = "base_dir" in inspect.signature(cls).parameters
+        except (TypeError, ValueError):
+            accepts = False
+        if accepts:
+            options["base_dir"] = base_dir
+    return cls(**options)
+
+
+def make_runner(name: str, options: dict[str, Any] | None = None, base_dir: Path | None = None) -> Runner:
+    obj = _construct(find("runner", name), options, base_dir)
     if not isinstance(obj, Runner):
         raise ValueError(f"Runner '{name}' has no run(model, case) method.")
     return obj
 
 
-def make_scorer(name: str, options: dict[str, Any] | None = None) -> Scorer:
-    obj = find("scorer", name)(**(options or {}))
+def make_scorer(name: str, options: dict[str, Any] | None = None, base_dir: Path | None = None) -> Scorer:
+    obj = _construct(find("scorer", name), options, base_dir)
     if not isinstance(obj, Scorer) or not getattr(obj, "metrics", None):
         raise ValueError(f"Scorer '{name}' needs a non-empty `metrics` and a score(case, output) method.")
     return obj

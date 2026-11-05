@@ -36,8 +36,9 @@ a file format or a way of scoring is a plugin.
 
 | Part | Module | Why it is fixed |
 |---|---|---|
+| Canonical JSON and hashes | `canonical.py` | Every hash is SHA-256 over canonical JSON (RFC 8785), so a program in any language computes the same hash. Hashes from before 0.3 (`sha256:`) are still checked with the older method. |
 | Test set and its hash | `testset.py` | A rerun must be able to prove it used the same cases |
-| Pass mark and its hash | `passmark.py` | The rule is set before the results, and the record shows any later change |
+| Pass mark and its hash | `passmark.py` | The rule is set before the results, and an accidental later change is caught. A hash does not stop someone changing the rule and recomputing it; signed records, planned, will. |
 | The decision | `passmark.py` | The same results and rule must always give the same choice |
 | Run record | `record.py` | One format that any tool can read |
 | Summaries | `report.py` | Means, ranges across repeats and breakdowns by tag are computed one way |
@@ -59,11 +60,16 @@ class Runner(Protocol):
 
 `model.settings` holds that model's settings from the configuration, such as a temperature or
 an endpoint. `RunOutput` carries the output, cost, input and output tokens, an optional time
-taken (Trialmark times the call when it is left empty) and an optional error.
+taken (Trialmark times the call when it is left empty), an optional error and an optional note.
 
-Built in: `echo`, a stand-in model for trying Trialmark and for tests, and `python`, which calls
-a function you name (`"path/to/file.py:function"` or `"module:function"`), so a model can be
-tested without writing a plugin package.
+Built in:
+- `anthropic` and `openai` call a model directly through the provider's SDK, installed as an
+  extra. Their settings take instructions, whole documents to put in front of the model, an
+  output limit, and prices per million tokens (Trialmark ships no price list, because prices
+  change). Credentials come from the environment, as the SDK reads them.
+- `python` calls a function you name (`"path/to/file.py:function"` or `"module:function"`), so
+  any model or system can be tested without writing a plugin package.
+- `echo` is a stand-in model for trying Trialmark and for tests.
 
 ### Scorer
 
@@ -76,11 +82,18 @@ class Scorer(Protocol):
 ```
 
 `metrics` lets the core score a failed call zero on every metric. A scorer that raises an
-error scores the case zero and leaves a note on the result.
+error scores the case zero and leaves a note on the result. `score` may also return a short
+explanation under the key `note`, which is kept on the result. A scorer that grades with a model
+sets an attribute `judge`, a dict describing the judge, which the run record stores.
 
-Built in: `exact-match` (metric `correct`, ignoring case, punctuation and spacing by default)
-and `fields` (for extraction: `fields_correct` and `all_fields_correct`, comparing a reference
-object field by field).
+Built in:
+- `judge` grades a free-text answer against the reference with a language model, through the
+  Anthropic or OpenAI SDK, with structured output. Metrics: `correct`, `partial`, `declined`,
+  and `grounded` when source documents are given. `rules_file` replaces the built-in grading
+  rules; the record keeps a hash of the rules in use.
+- `exact-match` (metric `correct`, ignoring case, punctuation and spacing by default).
+- `fields` (for extraction: `fields_correct` and `all_fields_correct`, comparing a reference
+  object field by field).
 
 ### Loader
 
@@ -94,7 +107,7 @@ Renders a record: `(record, by_tag) -> str`. Built in: `text`, `markdown` and `j
 
 ## How plugins are found
 
-1. Built-in plugins, registered in `builtins.py`.
+1. Built-in plugins, registered in `builtins.py` and `providers.py`.
 2. Installed packages that declare an entry point in `trialmark.runners`, `trialmark.scorers`,
    `trialmark.loaders` or `trialmark.reports`.
 
@@ -127,9 +140,16 @@ Teams extend Trialmark by installing it from PyPI and adding plugins, not by for
 | `scorers` | A list of names, or `{"name", "options"}` |
 | `repeats` | How many times each model runs the whole set (default 3) |
 | `concurrency` | How many calls run at once (default 1) |
-| `judge` | Optional: the judge model and prompt version, recorded for readers |
+| `judge` | Optional: a description of the judge, recorded for readers. Filled in by the `judge` scorer when left out. |
 | `environment` | Optional: anything else to record, such as a code version |
 | `output` | Where to save the run record |
 
-Paths in the file are relative to the file. The `python` runner's file paths are relative to the
-folder Trialmark is run from.
+Paths in the file are relative to the file, including the paths in plugin options and model
+settings: a plugin class whose constructor accepts `base_dir` receives the configuration's
+folder. The `python` runner also looks for a relative file in the folder Trialmark is run from.
+
+## File formats
+
+`src/trialmark/schemas/` holds a JSON Schema for the test set, the pass mark and the run record.
+`trialmark schema <name>` prints one. Code in another language can write Trialmark files against
+them, and compute the same hashes by following RFC 8785.

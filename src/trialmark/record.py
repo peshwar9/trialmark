@@ -95,7 +95,7 @@ class RunRecord:
 
     def parsed_pass_mark(self) -> PassMark:
         pm = parse_pass_mark(self.pass_mark)
-        if pm.hash != self.pass_mark_hash:
+        if not pm.matches(self.pass_mark_hash):
             raise ValueError("The pass mark does not match the hash recorded when it was set.")
         return pm
 
