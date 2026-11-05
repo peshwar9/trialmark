@@ -36,37 +36,8 @@ def answer(model_id, case_input, settings):
 A case's input can be any JSON value, not only text, so a function can take, for example, a
 file path or a set of parameters and do whatever the model needs.
 
-## Do you need servers to run a test?
-
-Usually not. Trialmark itself is a Python package: a test starts, calls the models, writes its
-record and finishes, with no server of its own. Whether you need any other infrastructure
-depends on two things, not on the type of model:
-
-1. **Where the model runs.** A model a provider hosts behind an API needs nothing from you. A
-   model you run yourself needs machines that can run it, and if speed matters, the same
-   hardware you will deploy on, because the same model runs at very different speeds on
-   different hardware.
-2. **How big the test data is.** A few thousand cases of text fit in a file. Hours of audio or
-   video, or large image sets, need shared storage, and a run that makes millions of
-   predictions needs somewhere compact to keep them.
-
-This applies to language models as much as any other: a model called through an API needs
-nothing, while an open-weight model on your own servers needs a GPU machine.
-
-| Kind of model | Through a provider's API: no infrastructure | Run yourself: needs infrastructure | Test data |
-|---|---|---|---|
-| **Language models** | Claude, GPT, Gemini, Mistral | Llama, Qwen and others on your own GPU servers, with vLLM or Ollama | Text: small |
-| **Classic machine-learning models** (scikit-learn classifiers, forecasting) | Rarely offered | Usually an ordinary laptop or server; small models need no GPU | Tables: small |
-| **Embedding and reranking models** | Voyage, OpenAI, Cohere | Open models such as BGE on your own machines, often without a GPU | Text: small, plus a collection of documents to search |
-| **Speech to text** | Whisper through Groq or OpenAI, and other speech APIs | Whisper or similar on your own GPUs | Audio: large |
-| **Image, audio and video generation** | Generation APIs from several providers | Open models on large GPUs | The outputs are large |
-| **Models that read images and answer in text** | Claude, GPT and Gemini read images through their APIs | Open-weight models such as Qwen-VL on GPUs | Images: medium |
-| **Detection, segmentation and tracking models** | Rarely: a few cloud vision APIs | Almost always: GPUs or edge devices, tested on the hardware they will run on | Images and video: large |
-
-So a team whose models are all reached through APIs needs only Trialmark, on a laptop or in its
-build pipeline. A team that runs its own models needs compute to run them, and a team with large
-media test sets needs storage. None of it runs all the time: these are what a test reads from and
-writes to while it runs.
+Whether testing a model needs servers or storage depends on where the model runs, not on its
+type: see [Deployment](deployment.md).
 
 ## Not supported yet, and what each would need
 
@@ -88,5 +59,6 @@ the runner and scorer as plugins: [ARCHITECTURE.md](../ARCHITECTURE.md) and the 
 "Writing a plugin" section show how, and Trialmark finds an installed plugin without any change
 to the core.
 
-**See also:** [What you can test](tasks.md) for each kind of task and its scorer, and the
+**See also:** [What you can test](tasks.md) for each kind of task and its scorer,
+[Deployment](deployment.md) for what you need to set up, and the
 [starters](../examples/starters) for ready-to-run examples.
