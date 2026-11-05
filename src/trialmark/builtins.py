@@ -131,33 +131,54 @@ class FieldMatch:
 
     fields_correct = the share of the reference's fields the output got right.
     all_fields_correct = 1 only if every field is right.
-    An output that is a JSON string is parsed first. Field values are compared
-    after the same normalisation as exact-match.
+    The output is read as JSON first, allowing a ```json fence or a sentence
+    around the object. Field values are compared after the same normalisation as
+    exact-match, and two values that are both numbers are compared as numbers, so
+    "1,250.00" matches 1250.
 
     Options:
       normalise: as for exact-match (default true).
+      tolerance: for numeric fields, the allowed relative difference (default 0).
     """
 
     metrics = ("fields_correct", "all_fields_correct")
 
-    def __init__(self, normalise: bool = True) -> None:
+    def __init__(self, normalise: bool = True, tolerance: float = 0.0) -> None:
         self.normalise = normalise
+        self.tolerance = float(tolerance)
 
-    def score(self, case: Case, output: Any) -> dict[str, float]:
+    def _same(self, got: Any, want: Any) -> bool:
+        from .scorers import close_enough, numbers_in
+
+        if _normalise(got, self.normalise) == _normalise(want, self.normalise):
+            return True
+        g, w = numbers_in(got), numbers_in(want)
+        # Numeric only when each side is a single number and nothing else.
+        if len(g) == 1 and len(w) == 1 and _NON_NUMBER.sub("", str(got)) == "" and _NON_NUMBER.sub("", str(want)) == "":
+            return close_enough(g[0], w[0], self.tolerance)
+        return False
+
+    def score(self, case: Case, output: Any) -> dict[str, Any]:
+        from .scorers import parse_json_output
+
         ref = case.reference
         if not isinstance(ref, dict) or not ref:
             raise ValueError(f"Case '{case.id}': the fields scorer needs a reference object with fields.")
-        if isinstance(output, str):
-            try:
-                output = json.loads(output)
-            except json.JSONDecodeError:
-                output = {}
-        if not isinstance(output, dict):
-            output = {}
-        right = sum(
-            1 for k, v in ref.items() if _normalise(output.get(k), self.normalise) == _normalise(v, self.normalise)
-        )
-        return {"fields_correct": right / len(ref), "all_fields_correct": 1.0 if right == len(ref) else 0.0}
+        value, parsed = parse_json_output(output)
+        if not isinstance(value, dict):
+            value = {}
+        wrong = [k for k, v in ref.items() if not self._same(value.get(k), v)]
+        right = len(ref) - len(wrong)
+        out: dict[str, Any] = {"fields_correct": right / len(ref), "all_fields_correct": 1.0 if not wrong else 0.0}
+        if not parsed:
+            out["note"] = "the answer is not valid JSON"
+        elif wrong:
+            out["note"] = "wrong: " + ", ".join(wrong)
+        return out
+
+
+# Everything that is not part of writing a number: digits, signs, separators, %.
+_NON_NUMBER = re.compile(r"[\d\s,.%+-]")
 
 
 # --- Loaders --------------------------------------------------------------------

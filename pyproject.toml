@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "trialmark"
-version = "0.4.0"
+version = "0.5.0"
 description = "An open-source framework for evaluating language models and acceptance-testing them for your task: your own test cases, a pass mark fixed before the results, and a reproducible record of accuracy, cost and speed."
 readme = "README.md"
 license = "Apache-2.0"
@@ -24,6 +24,7 @@ dependencies = []
 [project.optional-dependencies]
 anthropic = ["anthropic>=2.5"]
 openai = ["openai>=3.40"]
+jsonschema = ["jsonschema>=4.18"]
 dev = ["pytest>=8", "jsonschema>=4.18"]
 
 [project.urls]

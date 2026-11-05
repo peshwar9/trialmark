@@ -15,10 +15,11 @@ You are building something with an AI model and have to choose one. A bigger mod
 more accurate but costs more and is slower; a smaller one is cheaper, but is it good enough for
 your task? Trialmark answers that with evidence from your own questions, not a leaderboard.
 
-**1. Try it in two minutes with a ready-made example.** `trialmark init anthropic` or
-`trialmark init openai` gives you a small working project: a short made-up contract, ten
-questions about it with the right answers, and a settings file. Add your API key and run it. Two
-models answer the questions and a third model grades their answers.
+**1. Try it in two minutes with a ready-made example.** `trialmark init qa` gives you a small
+working project: a short made-up contract, ten questions about it with the right answers, and a
+settings file. Add your API key and run it. Two models answer the questions and a third model
+grades their answers. There are starters for four other kinds of task too: extracting fields,
+classifying, summarising and calculating.
 
 **2. Test models on your own questions.** Put your questions and their right answers in a
 spreadsheet saved as CSV, label each question with its kind if you like ("simple fact", "needs
@@ -82,11 +83,12 @@ Trialmark is at an early stage.
 | `trialmark run`, which estimates the cost, then runs every model on every case for every repeat once you add `--yes` | |
 | Runners that call Anthropic and OpenAI models directly, and a runner for a function of your own | |
 | A reference-answer judge, which grades an answer as correct, partly correct or incorrect, and whether it is grounded and whether it declined | |
-| An exact-match scorer and a field-by-field scorer for extraction | |
+| Scorers for each kind of task: exact match, fields, labels, numbers, JSON Schema, and a checklist judge for writing | |
+| `trialmark confusion`: per-category precision and recall for classification | |
 | Plugins for runners, scorers, loaders and reports (see [ARCHITECTURE.md](ARCHITECTURE.md)) | |
 | Reports as text, Markdown or JSON, with ranges and the breakdown by tag | |
 | `trialmark gate` for pipelines, and JSON Schema files for every format | |
-| `trialmark init`, with ready-to-run starters for Anthropic and OpenAI models | |
+| `trialmark init`, with ready-to-run starters for five kinds of task, for Anthropic or OpenAI models | |
 | `trialmark judge-check`, which measures how often the judge agrees with your own grades | |
 
 ## Install
@@ -105,25 +107,42 @@ pip install "trialmark[openai]"
 
 ## Quick start with your own key
 
-Two starters are ready to run: each tests two models on ten questions about a short fictional
-contract, with a third model as the judge. Bring an Anthropic or OpenAI key:
+Each starter tests two models on a small fictional task and runs as it is. Bring an Anthropic
+or OpenAI key:
 
 ```bash
 pip install "trialmark[anthropic]"
 export ANTHROPIC_API_KEY=...
 
-trialmark init anthropic                      # writes trialmark-anthropic/
-cd trialmark-anthropic
+trialmark init qa                             # writes trialmark-qa-anthropic/
+cd trialmark-qa-anthropic
 trialmark run config.json                     # the plan and a cost estimate; spends nothing
 trialmark run config.json --limit 3 --yes     # three questions first
 trialmark run config.json --by-tag --yes      # the full test, about $1
 trialmark gate record.json --model claude-haiku-5-5
 ```
 
-For OpenAI, use `"trialmark[openai]"`, `OPENAI_API_KEY` and `trialmark init openai`. The same
-starters are in [`examples/quickstart-anthropic`](examples/quickstart-anthropic) and
-[`examples/quickstart-openai`](examples/quickstart-openai), each with a README on making it
-yours: your questions, your documents, your models and your pass mark.
+For OpenAI, use `"trialmark[openai]"`, `OPENAI_API_KEY` and `trialmark init qa --provider openai`.
+Every starter is also in [`examples/starters/`](examples/starters), each with a README on making
+it yours: your cases, your models, your instructions and your pass mark.
+
+## Kinds of task
+
+Trialmark tests any task where you can give a model an input and say what a good output is.
+[docs/tasks.md](docs/tasks.md) explains each kind: how it is marked, what your test cases look
+like, and how to set it up.
+
+| Kind of task | Marked by | Starter |
+|---|---|---|
+| Answering questions from documents (RAG) | a judge model, against your right answers | `trialmark init qa` |
+| Extracting fields from documents and forms | field by field, and the JSON's shape | `trialmark init extraction` |
+| Classifying into categories | the label, then per-category precision and recall | `trialmark init classification` |
+| Writing, summarising and analysis | a judge model, against your checklist | `trialmark init summarisation` |
+| Calculating figures | the number, within a tolerance | `trialmark init calculation` |
+| Structured output (JSON of a given shape) | a JSON Schema | part of `extraction` |
+| Your own system, such as your own retrieval pipeline | any of the above | see [docs/tasks.md](docs/tasks.md) |
+
+Conversations and agents (several turns, tool calls) are not supported yet.
 
 **Nothing is spent without `--yes`.** `trialmark run` first prints the plan and an estimate
 for each model and for the judge. The estimate errs on the high side; the record holds what

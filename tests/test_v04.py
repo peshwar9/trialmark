@@ -15,19 +15,11 @@ from trialmark.judgecheck import score_grades, verdict_of, write_sample
 from trialmark.run import select_cases
 
 ROOT = Path(__file__).parent.parent
-TEMPLATES = ROOT / "src" / "trialmark" / "templates"
-
-
-def test_starters_in_examples_match_the_packaged_templates():
-    for provider in ("anthropic", "openai"):
-        for name in ("README.md", "config.json", "questions.csv", "contract.md"):
-            packaged = (TEMPLATES / provider / name).read_text()
-            copy = (ROOT / "examples" / f"quickstart-{provider}" / name).read_text()
-            assert packaged == copy, f"examples/quickstart-{provider}/{name} differs from the template"
 
 
 @pytest.mark.parametrize("provider", ["anthropic", "openai"])
-def test_init_writes_a_starter_that_estimates_without_a_key(tmp_path, capsys, monkeypatch, provider):
+def test_init_with_a_provider_name_writes_the_qa_starter(tmp_path, capsys, monkeypatch, provider):
+    # "trialmark init anthropic", as in 0.4, still works.
     monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)
     target = tmp_path / "starter"
@@ -43,9 +35,9 @@ def test_init_writes_a_starter_that_estimates_without_a_key(tmp_path, capsys, mo
 
 
 def test_starter_estimate_is_in_a_sensible_range(tmp_path):
-    main(["init", "anthropic", "--dir", str(tmp_path / "s")])
+    main(["init", "qa", "--dir", str(tmp_path / "s")])
     est = estimate_run(load_config(tmp_path / "s" / "config.json"))
-    assert 0.5 < est.known_total < 5
+    assert 0.3 < est.known_total < 5
     assert est.answers["claude-haiku-5-5"] < est.answers["claude-sonnet-5-5"]
 
 

@@ -1,0 +1,43 @@
+{
+  "name": "invoices",
+  "version": "1",
+  "description": "Six fictional invoices, written for testing, in different layouts. Each reference holds the fields a person read from the invoice.",
+  "cases": [
+    {
+      "id": "inv1",
+      "tags": ["tidy"],
+      "input": "INVOICE\nNorthbridge Advisory Ltd\n12 Wharf Street, Leeds LS1 4BT\n\nInvoice number: NB-2026-0142\nInvoice date: 14 March 2026\nBill to: Lumen Retail plc\n\nWorkshop facilitation, two days ........ GBP 3,000.00\nTravel (pre-approved) ................... GBP 240.00\nSubtotal ................................ GBP 3,240.00\nVAT at 20% .............................. GBP 648.00\nTotal due ............................... GBP 3,888.00\n\nPayment within 30 days.",
+      "reference": { "invoice_number": "NB-2026-0142", "invoice_date": "2026-03-14", "supplier": "Northbridge Advisory Ltd", "currency": "GBP", "total": 3888.00 }
+    },
+    {
+      "id": "inv2",
+      "tags": ["tidy"],
+      "input": "Harbour Supplies Inc.\nInvoice #HS-88213\nDate: 2026-02-27\nCustomer: Copperleaf Analytics\n\nQty  Item                 Unit     Amount\n12   Ergonomic chair      $310.00  $3,720.00\n4    Standing desk frame  $425.00  $1,700.00\n\nShipping: $150.00\nSales tax (8.875%): $494.36\nTOTAL: $6,064.36 USD",
+      "reference": { "invoice_number": "HS-88213", "invoice_date": "2026-02-27", "supplier": "Harbour Supplies Inc.", "currency": "USD", "total": 6064.36 }
+    },
+    {
+      "id": "inv3",
+      "tags": ["messy"],
+      "input": "thanks for the order!! here's your bill\nfrom: Pixel & Pine Studio (design)\nref no. PP/0093\ndated 2nd April 2026\nlogo design 1,200 EUR\nbrand guide 800 EUR\n-10% loyalty discount\nso the amount to pay is 1.800,00 EUR (bank details below)",
+      "reference": { "invoice_number": "PP/0093", "invoice_date": "2026-04-02", "supplier": "Pixel & Pine Studio", "currency": "EUR", "total": 1800.00 }
+    },
+    {
+      "id": "inv4",
+      "tags": ["messy"],
+      "input": "TAX INVOICE\nSudarshan Facility Services Pvt Ltd, Bengaluru\nInvoice No: SFS/25-26/1187    Date: 05-01-2026 (5 January 2026)\nTo: Greenfield Apartments Owners Association\nHousekeeping, December 2025: Rs. 1,45,000.00\nCGST 9%: Rs. 13,050.00\nSGST 9%: Rs. 13,050.00\nInvoice total: Rs. 1,71,100.00",
+      "reference": { "invoice_number": "SFS/25-26/1187", "invoice_date": "2026-01-05", "supplier": "Sudarshan Facility Services Pvt Ltd", "currency": "INR", "total": 171100.00 }
+    },
+    {
+      "id": "inv5",
+      "tags": ["tidy"],
+      "input": "Kestrel Cloud Services GmbH\nRechnung / Invoice: KCS-77-2026\nInvoice date: 31.01.2026\nBilled to: Northwind Logistics AG\nPlatform subscription, January 2026: EUR 4,200.00\nAdditional storage, 2 TB: EUR 180.00\nNet: EUR 4,380.00\nVAT 19%: EUR 832.20\nGross total: EUR 5,212.20",
+      "reference": { "invoice_number": "KCS-77-2026", "invoice_date": "2026-01-31", "supplier": "Kestrel Cloud Services GmbH", "currency": "EUR", "total": 5212.20 }
+    },
+    {
+      "id": "inv6",
+      "tags": ["messy"],
+      "input": "Re: invoice for last month\n\nHi team, attaching our invoice for the plumbing work at Unit 4. Invoice 2026-031 from Ridgeway Plumbing & Heating, issued 9 February 2026. Labour came to £560 and parts £214.50, so £774.50 in total. We're not VAT registered. Cheers, Dan",
+      "reference": { "invoice_number": "2026-031", "invoice_date": "2026-02-09", "supplier": "Ridgeway Plumbing & Heating", "currency": "GBP", "total": 774.50 }
+    }
+  ]
+}

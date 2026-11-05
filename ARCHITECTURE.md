@@ -103,9 +103,15 @@ Built in:
   Anthropic or OpenAI SDK, with structured output. Metrics: `correct`, `partial`, `declined`,
   and `grounded` when source documents are given. `rules_file` replaces the built-in grading
   rules; the record keeps a hash of the rules in use.
+- `checklist` (in `providers.py`), for writing and analysis: a judge model marks each item of a
+  checklist met or not met. Metrics: `checklist_met`, `all_met`.
 - `exact-match` (metric `correct`, ignoring case, punctuation and spacing by default).
 - `fields` (for extraction: `fields_correct` and `all_fields_correct`, comparing a reference
-  object field by field).
+  object field by field, and numbers as numbers).
+- In `scorers.py`: `label` for classification, `number` for figures within a tolerance, and
+  `json-schema` for structured output.
+
+[docs/tasks.md](docs/tasks.md) says which scorer suits which kind of task.
 
 ### Loader
 
@@ -146,8 +152,12 @@ Teams extend Trialmark by installing it from PyPI and adding plugins, not by for
 narrowed run holds the hash of the cases actually run. After the run, a scorer with a `spent`
 attribute, such as the judge, has its spend written into the record's `judge` entry.
 
-`trialmark init` copies a starter from `src/trialmark/templates/`; `examples/quickstart-*` are
-the same files, and a test keeps them identical. `trialmark judge-check` (`judgecheck.py`)
+`trialmark init <task> --provider <provider>` writes a starter built by `src/trialmark/starters/`:
+each task's content files (`starters/files/<task>/`), a configuration combining the task with
+the provider's models and prices, and a README. `examples/starters/` holds every starter,
+written by `examples/make_starters.py`, and a test keeps them identical to what `init` writes.
+`trialmark confusion` (`confusion.py`) computes per-label precision and recall for a
+classification run. `trialmark judge-check` (`judgecheck.py`)
 writes a blind sample of answers for a person to grade and compares their grades with the run's.
 
 ## Configuration file

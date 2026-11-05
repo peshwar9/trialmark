@@ -1,0 +1,52 @@
+{
+  "name": "summaries",
+  "version": "1",
+  "description": "Four fictional sets of meeting notes and emails, written for testing. Each case asks for a short summary; its checklist says what a good summary must contain. Items that apply to every case are in config.json.",
+  "cases": [
+    {
+      "id": "s1",
+      "tags": ["meeting"],
+      "input": "Summarise these notes for the chief executive in under 120 words.\n\nOps review, 3 November 2026. Present: Priya (ops), Tom (finance), Ana (IT).\n- Warehouse B pick rate fell from 142 to 118 orders an hour in October after the new scanners. Ana says a firmware update fixes the lag; vendor ships it on 10 November.\n- Overtime cost GBP 18,400 in October against a budget of GBP 9,000. Tom wants overtime capped from 1 December unless the pick rate recovers.\n- Priya proposed hiring two temporary pickers until the fix is proven. Tom agreed for four weeks only.\n- Decision: firmware update on 10 November, two temps from 7 November for four weeks, review on 8 December.",
+      "reference": { "checklist": [
+        "Says the pick rate fell after the new scanners",
+        "Mentions the firmware fix due on 10 November",
+        "States the overtime overspend (GBP 18,400 against GBP 9,000)",
+        "Gives the decision to hire two temporary pickers for four weeks",
+        "Mentions the review on 8 December"
+      ] }
+    },
+    {
+      "id": "s2",
+      "tags": ["email"],
+      "input": "Summarise this email thread for the chief executive in under 120 words.\n\nFrom Maria (legal), 28 October: Harbour Supplies want to raise prices 12% from January, citing freight costs. Our contract allows one increase a year capped at the consumer price index, currently 3.1%.\nFrom Ken (purchasing), 29 October: They supply 40% of our furniture. Two alternative suppliers have quoted 6% and 9% above current prices.\nFrom Maria, 30 October: We can refuse anything above 3.1%. If they insist, we may terminate on 90 days' notice.\nFrom Ken, 31 October: Recommend we offer 3.1% and start a trial order with the 6% supplier as a fallback.",
+      "reference": { "checklist": [
+        "Says Harbour Supplies want a 12% increase from January",
+        "Explains the contract caps increases at the consumer price index (3.1%)",
+        "Mentions the 90-day termination right",
+        "Gives the recommendation: offer 3.1% and trial the 6% supplier"
+      ] }
+    },
+    {
+      "id": "s3",
+      "tags": ["meeting"],
+      "input": "Summarise these notes for the chief executive in under 120 words.\n\nSecurity incident review, 4 November 2026.\n- On 1 November a staff laptop was stolen from a car. The disk was encrypted and the device was wiped remotely within two hours.\n- No customer data was stored on it; the user's email was synced, which held three supplier contracts.\n- Legal says this is not a reportable breach because the disk was encrypted.\n- Actions: remind staff not to leave devices in cars (HR, by 11 November); review which roles need email on laptops (IT, by 30 November).",
+      "reference": { "checklist": [
+        "Says a laptop was stolen and was encrypted and wiped",
+        "Says no customer data was on it",
+        "States that legal judged it not reportable",
+        "Lists both actions with their owners"
+      ] }
+    },
+    {
+      "id": "s4",
+      "tags": ["email"],
+      "input": "Summarise this email for the chief executive in under 120 words.\n\nFrom Sam (sales), 2 November: Q3 closed at GBP 2.41m against a target of GBP 2.6m, 7% short. The gap is almost entirely the Northwind renewal, which slipped to Q4 when their procurement head left; it is verbally agreed at GBP 210k. Excluding Northwind we beat target by 0.7%. Pipeline for Q4 is GBP 3.2m, of which GBP 1.1m is at contract stage. I'd like approval to offer Northwind a 5% discount for signing by 30 November.",
+      "reference": { "checklist": [
+        "Gives Q3 sales of GBP 2.41m against a GBP 2.6m target",
+        "Explains the shortfall is the Northwind renewal slipping to Q4",
+        "Mentions the Q4 pipeline of GBP 3.2m",
+        "States the request for approval of a 5% discount for signing by 30 November"
+      ] }
+    }
+  ]
+}

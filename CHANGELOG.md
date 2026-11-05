@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.5.0, 5 November 2026
+
+- **Every common kind of task can be tested**, with a guide, `docs/tasks.md`, covering
+  questions over documents, extraction, classification, writing and analysis, calculation,
+  structured output, and testing your own system.
+- New scorers: `checklist`, a judge that marks generated writing item by item; `label`, for
+  classification; `number`, for figures within a tolerance, with a `marker` such as "Answer:"
+  so a model may show its working; and `json-schema`, for structured output
+  (`pip install "trialmark[jsonschema]"`).
+- `trialmark confusion` gives per-category precision and recall, and which categories are
+  mistaken for which.
+- `fields` reads JSON from a ```json fence or a sentence, compares numbers as numbers, takes a
+  `tolerance`, and notes which fields were wrong.
+- Five starters, each for Anthropic or OpenAI: `trialmark init qa`, `extraction`,
+  `classification`, `summarisation` and `calculation` (with `--provider openai`). All ten are in
+  `examples/starters/`, which replaces `examples/quickstart-*`. `trialmark init anthropic` still
+  writes the question-answering starter.
+
 ## 0.4.0, 5 November 2026
 
 - **Nothing is spent without `--yes`.** `trialmark run` prints the plan and a cost estimate for

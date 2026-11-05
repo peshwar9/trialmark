@@ -16,5 +16,10 @@ jobs:
       - run: trialmark report examples/run-record.json --by-tag
       - run: trialmark run examples/config.json --by-tag --yes
       - run: trialmark gate examples/config-run-record.json --model perfect-model
-      - run: trialmark init anthropic --dir /tmp/starter-a && trialmark run /tmp/starter-a/config.json
-      - run: trialmark init openai --dir /tmp/starter-o && trialmark run /tmp/starter-o/config.json
+      - name: Every starter writes and estimates with no SDK or key
+        run: |
+          for t in qa extraction classification summarisation calculation; do
+            for p in anthropic openai; do
+              trialmark init $t --provider $p --dir /tmp/s-$t-$p && trialmark run /tmp/s-$t-$p/config.json
+            done
+          done

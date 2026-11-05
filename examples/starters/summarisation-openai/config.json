@@ -1,0 +1,60 @@
+{
+  "test_set": "notes.json",
+  "pass_mark": {
+    "metric": "checklist_met",
+    "tolerance_points": 5,
+    "choose": "cheapest"
+  },
+  "repeats": 3,
+  "concurrency": 4,
+  "models": [
+    {
+      "id": "gpt-4o-mini",
+      "runner": "openai",
+      "settings": {
+        "system": "You write short, accurate summaries for a busy chief executive.",
+        "pricing": {
+          "input": 0.15,
+          "output": 0.6,
+          "cache_read": 0.075
+        }
+      }
+    },
+    {
+      "id": "gpt-5.6-sol",
+      "runner": "openai",
+      "settings": {
+        "system": "You write short, accurate summaries for a busy chief executive.",
+        "pricing": {
+          "input": 4.0,
+          "output": 20.0,
+          "cache_read": 0.4
+        }
+      }
+    }
+  ],
+  "scorers": [
+    {
+      "name": "checklist",
+      "options": {
+        "model": "gpt-6-astra",
+        "pricing": {
+          "input": 10.0,
+          "output": 50.0,
+          "cache_read": 1.0
+        },
+        "checklist": [
+          "Is under 120 words",
+          "States nothing that is not in the notes or email",
+          "Is written in plain English"
+        ],
+        "provider": "openai"
+      }
+    }
+  ],
+  "environment": {
+    "starter": "summarisation-openai",
+    "prices_as_of": "9 September 2026, OpenAI list prices in USD per million tokens, gpt-5.6-sol at promotional pricing until 21 November 2026; check current prices"
+  },
+  "output": "record.json"
+}

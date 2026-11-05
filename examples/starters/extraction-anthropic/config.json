@@ -1,0 +1,58 @@
+{
+  "test_set": "invoices.json",
+  "pass_mark": {
+    "metric": "fields_correct",
+    "tolerance_points": 2,
+    "floors": {
+      "matches_schema": 1.0
+    },
+    "choose": "cheapest"
+  },
+  "repeats": 3,
+  "concurrency": 4,
+  "models": [
+    {
+      "id": "claude-haiku-5-5",
+      "runner": "anthropic",
+      "settings": {
+        "system": "Read the invoice and reply with JSON only, with exactly these keys: invoice_number, invoice_date (YYYY-MM-DD), supplier (the company that issued the invoice), currency (the three-letter ISO code), and total (the amount due, including tax, as a plain number).",
+        "pricing": {
+          "input": 0.1,
+          "output": 0.5
+        }
+      }
+    },
+    {
+      "id": "claude-sonnet-5-5",
+      "runner": "anthropic",
+      "settings": {
+        "system": "Read the invoice and reply with JSON only, with exactly these keys: invoice_number, invoice_date (YYYY-MM-DD), supplier (the company that issued the invoice), currency (the three-letter ISO code), and total (the amount due, including tax, as a plain number).",
+        "pricing": {
+          "input": 2.0,
+          "output": 10.0,
+          "cache_read": 0.2,
+          "cache_write": 2.5
+        }
+      }
+    }
+  ],
+  "scorers": [
+    {
+      "name": "fields",
+      "options": {
+        "tolerance": 0.005
+      }
+    },
+    {
+      "name": "json-schema",
+      "options": {
+        "schema_file": "schema.json"
+      }
+    }
+  ],
+  "environment": {
+    "starter": "extraction-anthropic",
+    "prices_as_of": "5 November 2026, Anthropic list prices in USD per million tokens; check current prices"
+  },
+  "output": "record.json"
+}

@@ -123,7 +123,8 @@ def test_field_scorer():
     got = s.score(case, json.dumps({"term": "12 Months", "notice": "60 days", "law": "india"}))
     assert got["fields_correct"] == pytest.approx(2 / 3)
     assert got["all_fields_correct"] == 0.0
-    assert s.score(case, "not json") == {"fields_correct": 0.0, "all_fields_correct": 0.0}
+    bad = s.score(case, "not json")
+    assert (bad["fields_correct"], bad["all_fields_correct"]) == (0.0, 0.0) and "not valid JSON" in bad["note"]
 
 
 def test_csv_loader_matches_json(tmp_path):

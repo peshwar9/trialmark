@@ -1,0 +1,58 @@
+{
+  "test_set": "invoices.json",
+  "pass_mark": {
+    "metric": "fields_correct",
+    "tolerance_points": 2,
+    "floors": {
+      "matches_schema": 1.0
+    },
+    "choose": "cheapest"
+  },
+  "repeats": 3,
+  "concurrency": 4,
+  "models": [
+    {
+      "id": "gpt-4o-mini",
+      "runner": "openai",
+      "settings": {
+        "system": "Read the invoice and reply with JSON only, with exactly these keys: invoice_number, invoice_date (YYYY-MM-DD), supplier (the company that issued the invoice), currency (the three-letter ISO code), and total (the amount due, including tax, as a plain number).",
+        "pricing": {
+          "input": 0.15,
+          "output": 0.6,
+          "cache_read": 0.075
+        }
+      }
+    },
+    {
+      "id": "gpt-5.6-sol",
+      "runner": "openai",
+      "settings": {
+        "system": "Read the invoice and reply with JSON only, with exactly these keys: invoice_number, invoice_date (YYYY-MM-DD), supplier (the company that issued the invoice), currency (the three-letter ISO code), and total (the amount due, including tax, as a plain number).",
+        "pricing": {
+          "input": 4.0,
+          "output": 20.0,
+          "cache_read": 0.4
+        }
+      }
+    }
+  ],
+  "scorers": [
+    {
+      "name": "fields",
+      "options": {
+        "tolerance": 0.005
+      }
+    },
+    {
+      "name": "json-schema",
+      "options": {
+        "schema_file": "schema.json"
+      }
+    }
+  ],
+  "environment": {
+    "starter": "extraction-openai",
+    "prices_as_of": "9 September 2026, OpenAI list prices in USD per million tokens, gpt-5.6-sol at promotional pricing until 21 November 2026; check current prices"
+  },
+  "output": "record.json"
+}

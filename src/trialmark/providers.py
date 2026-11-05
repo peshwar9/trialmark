@@ -457,3 +457,113 @@ class ReferenceJudge:
         if "grounded" in self.metrics:
             scores["grounded"] = 1.0 if v.get("grounded") else 0.0
         return scores
+
+
+# --- The checklist judge, for generation and analysis ------------------------------
+
+CHECKLIST_RULES = """You check a piece of writing against a checklist written by a person.
+
+You receive the TASK the writer was given, sometimes a REFERENCE showing what a good answer
+contains, a numbered CHECKLIST and the OUTPUT being checked.
+
+For each checklist item, in order, decide whether the OUTPUT meets it:
+- "met": true only if the output clearly does what the item asks. Partly meeting an item is
+  not meeting it.
+- "reason": one short sentence saying why.
+
+Return exactly one entry per checklist item, in the same order. Judge only the items listed;
+do not add your own."""
+
+_CHECKLIST_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "items": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {"met": {"type": "boolean"}, "reason": {"type": "string"}},
+                "required": ["met", "reason"],
+                "additionalProperties": False,
+            },
+        }
+    },
+    "required": ["items"],
+    "additionalProperties": False,
+}
+
+
+def checklist_for(case: Case, shared: list[str]) -> tuple[list[str], str]:
+    """The checklist for one case, and any reference text to show the judge.
+
+    A case's reference may be a list of items, an object {"checklist": [...],
+    "reference": "..."}, or plain text, which is shown to the judge as an example
+    of a good answer. Items in the scorer's `checklist` option apply to every case
+    and come first.
+    """
+    ref = case.reference
+    own: list[str] = []
+    text = ""
+    if isinstance(ref, list):
+        own = [str(x) for x in ref]
+    elif isinstance(ref, dict):
+        own = [str(x) for x in ref.get("checklist", [])]
+        text = _text(ref.get("reference", ""))
+    elif ref not in (None, ""):
+        text = _text(ref)
+    return [*shared, *own], text
+
+
+@builtin("scorer", "checklist")
+class ChecklistJudge(ReferenceJudge):
+    """Checks generated writing or analysis against a checklist, item by item,
+    with a language model.
+
+    Metrics:
+      checklist_met: the share of checklist items the output meets.
+      all_met: 1 only if it meets every item.
+
+    Options: as for the judge (model, provider, documents, rules_file, pricing,
+    max_tokens, client), and:
+      checklist: items that apply to every case, such as "Under 150 words" or
+                 "Written in plain English". Each case's reference adds its own.
+    """
+
+    def __init__(self, checklist: list[str] | None = None, **options: Any) -> None:
+        rules_file = options.get("rules_file")
+        super().__init__(**options)
+        self.shared = [str(x) for x in (checklist or [])]
+        if not rules_file:
+            self.rules = CHECKLIST_RULES
+        self.schema = _CHECKLIST_SCHEMA
+        self.metrics = ("checklist_met", "all_met")
+        from .canonical import digest
+
+        self.judge = {**self.judge, "kind": "checklist", "rules_hash": digest(self.rules), "checklist": self.shared}
+
+    def estimate_cost(self, case: Case) -> float | None:
+        items, text = checklist_for(case, self.shared)
+        fresh = _tokens(self.rules) + _tokens(_text(case.input)) + _tokens(text) + _tokens(" ".join(items)) + 600
+        return _estimate(self.pricing, _tokens(self.documents), fresh, 250 + 40 * len(items))
+
+    def score(self, case: Case, output: Any) -> dict[str, Any]:
+        items, text = checklist_for(case, self.shared)
+        if not items:
+            raise ValueError(f"Case '{case.id}': the checklist scorer needs checklist items.")
+        listed = "\n".join(f"{i}. {item}" for i, item in enumerate(items, 1))
+        prompt = (
+            f"TASK:\n{_text(case.input)}\n\n"
+            + (f"REFERENCE:\n{text}\n\n" if text else "")
+            + f"CHECKLIST:\n{listed}\n\nOUTPUT:\n{_text(output)}"
+        )
+        v, problem = self._ask(prompt)
+        if v is None:
+            return {"checklist_met": 0.0, "all_met": 0.0, "note": problem}
+        marks = v.get("items", [])
+        met = [bool(m.get("met")) for m in marks[: len(items)]]
+        met += [False] * (len(items) - len(met))  # a missing mark counts as not met
+        missed = [f"{i}. {items[i - 1]}" for i, ok in enumerate(met, 1) if not ok]
+        note = ("missed " + "; ".join(missed)) if missed else ""
+        if len(marks) != len(items):
+            note = (note + " " if note else "") + f"(the judge marked {len(marks)} of {len(items)} items)"
+        share = sum(met) / len(items)
+        return {"checklist_met": share, "all_met": 1.0 if all(met) else 0.0, "note": note[:500]}

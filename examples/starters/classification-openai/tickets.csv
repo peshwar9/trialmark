@@ -1,0 +1,13 @@
+id,input,reference,tags
+t1,"I was charged twice for my March subscription, can you refund one of them?",billing,clear
+t2,The app crashes every time I open the reports page on my iPhone.,technical,clear
+t3,How do I change the email address on my account?,account,clear
+t4,"Love the new dashboard, it is much faster than before. Great work.",feedback,clear
+t5,My invoice shows the old company name. Can you send a corrected one?,billing,clear
+t6,I can't log in. The reset password link says it has expired.,account,clear
+t7,Exports to CSV come out with the columns in the wrong order since yesterday's update.,technical,clear
+t8,Please add a dark mode. Staring at a white screen all night is hard on the eyes.,feedback,clear
+t9,"I upgraded to the annual plan but the app still says I'm on monthly, and the card was charged.",billing,mixed
+t10,"After you changed my username, the mobile app keeps logging me out.",technical,mixed
+t11,"Your pricing page is confusing; I couldn't tell which plan includes the API.",feedback,mixed
+t12,I'd like to close my account and delete my data.,account,clear

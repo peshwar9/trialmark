@@ -117,7 +117,7 @@ def _entry_points(kind: str) -> dict[str, metadata.EntryPoint]:
 
 def _ensure_builtins() -> None:
     # Importing the modules runs their @builtin decorators.
-    from . import builtins, providers  # noqa: F401
+    from . import builtins, providers, scorers  # noqa: F401
 
 
 def find(kind: str, name: str) -> Any:

@@ -1,0 +1,7 @@
+id,input,reference,tags
+c1,How much do 4 boxes of A4 copier paper cost before VAT?,98.00,one-step
+c2,What do 3 black and 2 colour toner cartridges cost before VAT?,382.00,one-step
+c3,What is the price of 12 ergonomic chairs before VAT after the volume discount?,3422.40,two-step
+c4,"An order of 2 desk lamps: what is the total including delivery, before VAT?",96.50,two-step
+c5,"What is the total including VAT for 5 boxes of paper and 1 black toner cartridge, ignoring delivery?",228.60,two-step
+c6,"How much VAT is charged on 10 ergonomic chairs after the volume discount?",570.40,two-step

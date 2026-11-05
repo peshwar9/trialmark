@@ -112,24 +112,25 @@ def _schema(args: argparse.Namespace) -> int:
 
 
 def _init(args: argparse.Namespace) -> int:
-    from importlib import resources
+    from .starters import PROVIDERS, resolve, write
 
-    target = Path(args.dir or f"trialmark-{args.provider}")
+    task, provider = args.task, args.provider
+    if task in PROVIDERS:  # "trialmark init anthropic", as in 0.4: the question-answering starter
+        task, provider = "qa", task
+    t = resolve(task)
+    target = Path(args.dir or f"trialmark-{t.name}-{provider}")
     if target.exists() and any(target.iterdir()):
         print(f"trialmark: {target} already exists and is not empty; choose another --dir.", file=sys.stderr)
         return 2
-    target.mkdir(parents=True, exist_ok=True)
-    source = resources.files("trialmark").joinpath(f"templates/{args.provider}")
-    for name in ("README.md", "config.json", "questions.csv", "contract.md"):
-        (target / name).write_text(source.joinpath(name).read_text(encoding="utf-8"), encoding="utf-8")
-    key = "ANTHROPIC_API_KEY" if args.provider == "anthropic" else "OPENAI_API_KEY"
-    print(f"Wrote a starter in {target}/: README.md, config.json, questions.csv and contract.md.")
+    names = write(t.name, provider, target)
+    p = PROVIDERS[provider]
+    print(f"Wrote the {t.title.lower()} starter for {provider} in {target}/: {', '.join(names)}.")
     print("Next:")
-    print(f'  pip install "trialmark[{args.provider}]"')
-    print(f"  export {key}=...")
+    print(f'  pip install "trialmark[{",".join([p.extra, *t.extras])}]"')
+    print(f"  export {p.key}=...")
     print(f"  cd {target}")
     print("  trialmark run config.json                  # the plan and a cost estimate; spends nothing")
-    print("  trialmark run config.json --limit 3 --yes  # three questions first")
+    print("  trialmark run config.json --limit 3 --yes  # three cases first")
     return 0
 
 
@@ -149,6 +150,14 @@ def _judge_score(args: argparse.Namespace) -> int:
     record = load_record(args.record)
     judge = (record.judge or {}).get("model", "the scorer")
     print(agreement_report(score_grades(record, args.grades), judge))
+    return 0
+
+
+def _confusion(args: argparse.Namespace) -> int:
+    from .confusion import confusion, confusion_report
+
+    labels = [x.strip() for x in args.labels.split(",")] if args.labels else None
+    print(confusion_report(confusion(load_record(args.record), load_with(args.test_set), labels)))
     return 0
 
 
@@ -200,10 +209,17 @@ def main(argv: list[str] | None = None) -> int:
     s.add_argument("name", choices=["testset", "passmark", "run-record"])
     s.set_defaults(fn=_schema)
 
-    s = sub.add_parser("init", help="write a ready-to-run starter for Anthropic or OpenAI models")
-    s.add_argument("provider", choices=STARTERS)
-    s.add_argument("--dir", help="where to write it (default: trialmark-<provider>)")
+    s = sub.add_parser("init", help="write a ready-to-run starter for one kind of task")
+    s.add_argument("task", help="qa, extraction, classification, summarisation or calculation")
+    s.add_argument("--provider", default="anthropic", choices=STARTERS)
+    s.add_argument("--dir", help="where to write it (default: trialmark-<task>-<provider>)")
     s.set_defaults(fn=_init)
+
+    s = sub.add_parser("confusion", help="per-label precision and recall for a classification run")
+    s.add_argument("record")
+    s.add_argument("--test-set", required=True, help="the test set the run used")
+    s.add_argument("--labels", help="the allowed labels, separated by commas (default: the labels in the test set)")
+    s.set_defaults(fn=_confusion)
 
     jc = sub.add_parser("judge-check", help="check the judge against your own grades")
     jsub = jc.add_subparsers(dest="step", required=True)
