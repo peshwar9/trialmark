@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.1, 5 November 2026
+
+- The README, the package description and the command's help describe Trialmark as a framework
+  for evaluating language models and acceptance-testing them for your task. No change to
+  behaviour or formats.
+
 ## 0.3.0, 5 November 2026
 
 - Runners that call Anthropic and OpenAI models directly, installed as extras:

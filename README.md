@@ -1,7 +1,13 @@
 # Trialmark
 
-**Model acceptance tests for language models.** Test models on your own work, decide in advance
-what result is good enough, and keep a record that anyone can rerun and check.
+**Trialmark is an open-source framework for evaluating language models and acceptance-testing
+them for your task.** Test models on your own cases, fix the pass mark before you see the
+results, and get a reproducible record of accuracy, cost and speed, with a gate your pipeline can
+enforce.
+
+Evaluation measures how models perform. Acceptance testing decides whether a model is good
+enough for the task, against a rule written down before the results are seen, and records that
+decision so anyone can check it. Trialmark does both.
 
 Choosing a language model is a trade between accuracy, cost and speed. Trialmark makes that
 choice systematic:

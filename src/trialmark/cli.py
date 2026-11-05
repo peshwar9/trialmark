@@ -93,7 +93,7 @@ def _plugins(args: argparse.Namespace) -> int:
 
 
 def main(argv: list[str] | None = None) -> int:
-    p = argparse.ArgumentParser(prog="trialmark", description="Model acceptance tests with a pass mark set before the run.")
+    p = argparse.ArgumentParser(prog="trialmark", description="Evaluate language models and acceptance-test them for your task, with a pass mark fixed before the results.")
     p.add_argument("--version", action="version", version=f"trialmark {__version__}")
     sub = p.add_subparsers(dest="command", required=True)
 
