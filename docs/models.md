@@ -36,6 +36,38 @@ def answer(model_id, case_input, settings):
 A case's input can be any JSON value, not only text, so a function can take, for example, a
 file path or a set of parameters and do whatever the model needs.
 
+## Do you need servers to run a test?
+
+Usually not. Trialmark itself is a Python package: a test starts, calls the models, writes its
+record and finishes, with no server of its own. Whether you need any other infrastructure
+depends on two things, not on the type of model:
+
+1. **Where the model runs.** A model a provider hosts behind an API needs nothing from you. A
+   model you run yourself needs machines that can run it, and if speed matters, the same
+   hardware you will deploy on, because the same model runs at very different speeds on
+   different hardware.
+2. **How big the test data is.** A few thousand cases of text fit in a file. Hours of audio or
+   video, or large image sets, need shared storage, and a run that makes millions of
+   predictions needs somewhere compact to keep them.
+
+This applies to language models as much as any other: a model called through an API needs
+nothing, while an open-weight model on your own servers needs a GPU machine.
+
+| Kind of model | Through a provider's API: no infrastructure | Run yourself: needs infrastructure | Test data |
+|---|---|---|---|
+| **Language models** | Claude, GPT, Gemini, Mistral | Llama, Qwen and others on your own GPU servers, with vLLM or Ollama | Text: small |
+| **Classic machine-learning models** (scikit-learn classifiers, forecasting) | Rarely offered | Usually an ordinary laptop or server; small models need no GPU | Tables: small |
+| **Embedding and reranking models** | Voyage, OpenAI, Cohere | Open models such as BGE on your own machines, often without a GPU | Text: small, plus a collection of documents to search |
+| **Speech to text** | Whisper through Groq or OpenAI, and other speech APIs | Whisper or similar on your own GPUs | Audio: large |
+| **Image, audio and video generation** | Generation APIs from several providers | Open models on large GPUs | The outputs are large |
+| **Models that read images and answer in text** | Claude, GPT and Gemini read images through their APIs | Open-weight models such as Qwen-VL on GPUs | Images: medium |
+| **Detection, segmentation and tracking models** | Rarely: a few cloud vision APIs | Almost always: GPUs or edge devices, tested on the hardware they will run on | Images and video: large |
+
+So a team whose models are all reached through APIs needs only Trialmark, on a laptop or in its
+build pipeline. A team that runs its own models needs compute to run them, and a team with large
+media test sets needs storage. None of it runs all the time: these are what a test reads from and
+writes to while it runs.
+
 ## Not supported yet, and what each would need
 
 The core (test sets, the pass mark, repeats, the record, the gate) stays the same for every kind
@@ -44,12 +76,12 @@ loader to read its test cases.
 
 | Kind of model | What works today | What is missing |
 |---|---|---|
-| **Models that read images, audio or video and answer in text** (vision-language models, document readers) | A `python` runner can load the file named in a case's input, send it to the model and return its text answer; the text scorers then mark it | A built-in runner that sends files to Anthropic and OpenAI models, so no code is needed |
 | **Speech to text** | A `python` runner returns the transcript; `exact-match` marks it, which is too strict for transcripts | A word error rate scorer |
-| **Detection, segmentation and tracking vision models** (they return boxes, masks or tracks) | A `python` runner can return the predictions as JSON | Scorers for precision, recall and mAP, and for tracking; a loader for labelled images; a compact store for large numbers of predictions; and speed and hardware measurements, which matter more for these models. Runners for code under copyleft licences would ship as separate packages, so the core stays Apache-2.0 |
 | **Embedding and retrieval models** | A `python` runner can return the retrieved documents | Retrieval scorers such as recall at k and mean reciprocal rank |
 | **Image, audio and video generation** | Nothing useful yet | A judge that can look at the output, and a record that can hold or point to it |
 | **Conversations and agents that call tools** | Single-turn calls only | Test cases with several turns, and scorers for which tools were called and in what order |
+| **Models that read images, audio or video and answer in text** (vision-language models, document readers) | A `python` runner can load the file named in a case's input, send it to the model and return its text answer; the text scorers then mark it | A built-in runner that sends files to Anthropic and OpenAI models, so no code is needed |
+| **Detection, segmentation and tracking vision models** (they return boxes, masks or tracks) | A `python` runner can return the predictions as JSON | Scorers for precision, recall and mAP, and for tracking; a loader for labelled images; a compact store for large numbers of predictions; and speed and hardware measurements, which matter more for these models. Runners for code under copyleft licences would ship as separate packages, so the core stays Apache-2.0 |
 
 If you need one of these, [open an issue](https://github.com/peshwar9/trialmark/issues), or write
 the runner and scorer as plugins: [ARCHITECTURE.md](../ARCHITECTURE.md) and the README's
