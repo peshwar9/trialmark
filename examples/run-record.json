@@ -1,0 +1,899 @@
+{
+  "test_set": {
+    "name": "contract-questions",
+    "version": "2026-11-05",
+    "hash": "sha256:0d23c14ca92d03398c57c1796c52a3e0473ffe491adfb011760fd7aa66a4897f"
+  },
+  "pass_mark": {
+    "metric": "correct",
+    "tolerance_points": 15.0,
+    "floors": {
+      "grounded": 0.95
+    },
+    "choose": "cheapest"
+  },
+  "pass_mark_hash": "sha256:a582cc474615810dc62428eb2969ecc0747ae18891468884ca6db8aaef63ca9e",
+  "pass_mark_set_at": "2026-11-05T00:00:00+00:00",
+  "models": [
+    {
+      "id": "large-model",
+      "provider": "example",
+      "settings": {}
+    },
+    {
+      "id": "medium-model",
+      "provider": "example",
+      "settings": {}
+    },
+    {
+      "id": "small-model",
+      "provider": "example",
+      "settings": {}
+    }
+  ],
+  "repeats": 3,
+  "run_id": "example",
+  "trialmark_version": "0.1.0",
+  "judge": {
+    "model": "example-judge",
+    "prompt_version": "1"
+  },
+  "environment": {},
+  "results": [
+    {
+      "model": "large-model",
+      "repeat": 0,
+      "case_id": "q1",
+      "metrics": {
+        "correct": 1,
+        "grounded": 1
+      },
+      "tags": [
+        "multi-part"
+      ],
+      "output": null,
+      "cost_usd": 0.03,
+      "latency_ms": 9000,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    },
+    {
+      "model": "large-model",
+      "repeat": 0,
+      "case_id": "q2",
+      "metrics": {
+        "correct": 1,
+        "grounded": 1
+      },
+      "tags": [
+        "factual"
+      ],
+      "output": null,
+      "cost_usd": 0.03,
+      "latency_ms": 9000,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    },
+    {
+      "model": "large-model",
+      "repeat": 0,
+      "case_id": "q3",
+      "metrics": {
+        "correct": 1,
+        "grounded": 1
+      },
+      "tags": [
+        "factual"
+      ],
+      "output": null,
+      "cost_usd": 0.03,
+      "latency_ms": 9000,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    },
+    {
+      "model": "large-model",
+      "repeat": 0,
+      "case_id": "q4",
+      "metrics": {
+        "correct": 1,
+        "grounded": 1
+      },
+      "tags": [
+        "multi-part"
+      ],
+      "output": null,
+      "cost_usd": 0.03,
+      "latency_ms": 9000,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    },
+    {
+      "model": "large-model",
+      "repeat": 0,
+      "case_id": "q5",
+      "metrics": {
+        "correct": 1,
+        "grounded": 1
+      },
+      "tags": [
+        "not-in-documents"
+      ],
+      "output": null,
+      "cost_usd": 0.03,
+      "latency_ms": 9000,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    },
+    {
+      "model": "medium-model",
+      "repeat": 0,
+      "case_id": "q1",
+      "metrics": {
+        "correct": 1,
+        "grounded": 1
+      },
+      "tags": [
+        "multi-part"
+      ],
+      "output": null,
+      "cost_usd": 0.012,
+      "latency_ms": 6000,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    },
+    {
+      "model": "medium-model",
+      "repeat": 0,
+      "case_id": "q2",
+      "metrics": {
+        "correct": 1,
+        "grounded": 1
+      },
+      "tags": [
+        "factual"
+      ],
+      "output": null,
+      "cost_usd": 0.012,
+      "latency_ms": 6000,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    },
+    {
+      "model": "medium-model",
+      "repeat": 0,
+      "case_id": "q3",
+      "metrics": {
+        "correct": 1,
+        "grounded": 1
+      },
+      "tags": [
+        "factual"
+      ],
+      "output": null,
+      "cost_usd": 0.012,
+      "latency_ms": 6000,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    },
+    {
+      "model": "medium-model",
+      "repeat": 0,
+      "case_id": "q4",
+      "metrics": {
+        "correct": 0.5,
+        "grounded": 1
+      },
+      "tags": [
+        "multi-part"
+      ],
+      "output": null,
+      "cost_usd": 0.012,
+      "latency_ms": 6000,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    },
+    {
+      "model": "medium-model",
+      "repeat": 0,
+      "case_id": "q5",
+      "metrics": {
+        "correct": 1,
+        "grounded": 1
+      },
+      "tags": [
+        "not-in-documents"
+      ],
+      "output": null,
+      "cost_usd": 0.012,
+      "latency_ms": 6000,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    },
+    {
+      "model": "small-model",
+      "repeat": 0,
+      "case_id": "q1",
+      "metrics": {
+        "correct": 0.5,
+        "grounded": 1
+      },
+      "tags": [
+        "multi-part"
+      ],
+      "output": null,
+      "cost_usd": 0.003,
+      "latency_ms": 3000,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    },
+    {
+      "model": "small-model",
+      "repeat": 0,
+      "case_id": "q2",
+      "metrics": {
+        "correct": 1,
+        "grounded": 1
+      },
+      "tags": [
+        "factual"
+      ],
+      "output": null,
+      "cost_usd": 0.003,
+      "latency_ms": 3000,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    },
+    {
+      "model": "small-model",
+      "repeat": 0,
+      "case_id": "q3",
+      "metrics": {
+        "correct": 1,
+        "grounded": 1
+      },
+      "tags": [
+        "factual"
+      ],
+      "output": null,
+      "cost_usd": 0.003,
+      "latency_ms": 3000,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    },
+    {
+      "model": "small-model",
+      "repeat": 0,
+      "case_id": "q4",
+      "metrics": {
+        "correct": 0.5,
+        "grounded": 1
+      },
+      "tags": [
+        "multi-part"
+      ],
+      "output": null,
+      "cost_usd": 0.003,
+      "latency_ms": 3000,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    },
+    {
+      "model": "small-model",
+      "repeat": 0,
+      "case_id": "q5",
+      "metrics": {
+        "correct": 0,
+        "grounded": 0
+      },
+      "tags": [
+        "not-in-documents"
+      ],
+      "output": null,
+      "cost_usd": 0.003,
+      "latency_ms": 3000,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    },
+    {
+      "model": "large-model",
+      "repeat": 1,
+      "case_id": "q1",
+      "metrics": {
+        "correct": 1,
+        "grounded": 1
+      },
+      "tags": [
+        "multi-part"
+      ],
+      "output": null,
+      "cost_usd": 0.03,
+      "latency_ms": 9100,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    },
+    {
+      "model": "large-model",
+      "repeat": 1,
+      "case_id": "q2",
+      "metrics": {
+        "correct": 1,
+        "grounded": 1
+      },
+      "tags": [
+        "factual"
+      ],
+      "output": null,
+      "cost_usd": 0.03,
+      "latency_ms": 9100,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    },
+    {
+      "model": "large-model",
+      "repeat": 1,
+      "case_id": "q3",
+      "metrics": {
+        "correct": 1,
+        "grounded": 1
+      },
+      "tags": [
+        "factual"
+      ],
+      "output": null,
+      "cost_usd": 0.03,
+      "latency_ms": 9100,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    },
+    {
+      "model": "large-model",
+      "repeat": 1,
+      "case_id": "q4",
+      "metrics": {
+        "correct": 1,
+        "grounded": 1
+      },
+      "tags": [
+        "multi-part"
+      ],
+      "output": null,
+      "cost_usd": 0.03,
+      "latency_ms": 9100,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    },
+    {
+      "model": "large-model",
+      "repeat": 1,
+      "case_id": "q5",
+      "metrics": {
+        "correct": 1,
+        "grounded": 1
+      },
+      "tags": [
+        "not-in-documents"
+      ],
+      "output": null,
+      "cost_usd": 0.03,
+      "latency_ms": 9100,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    },
+    {
+      "model": "medium-model",
+      "repeat": 1,
+      "case_id": "q1",
+      "metrics": {
+        "correct": 1,
+        "grounded": 1
+      },
+      "tags": [
+        "multi-part"
+      ],
+      "output": null,
+      "cost_usd": 0.012,
+      "latency_ms": 6100,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    },
+    {
+      "model": "medium-model",
+      "repeat": 1,
+      "case_id": "q2",
+      "metrics": {
+        "correct": 1,
+        "grounded": 1
+      },
+      "tags": [
+        "factual"
+      ],
+      "output": null,
+      "cost_usd": 0.012,
+      "latency_ms": 6100,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    },
+    {
+      "model": "medium-model",
+      "repeat": 1,
+      "case_id": "q3",
+      "metrics": {
+        "correct": 1,
+        "grounded": 1
+      },
+      "tags": [
+        "factual"
+      ],
+      "output": null,
+      "cost_usd": 0.012,
+      "latency_ms": 6100,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    },
+    {
+      "model": "medium-model",
+      "repeat": 1,
+      "case_id": "q4",
+      "metrics": {
+        "correct": 0.5,
+        "grounded": 1
+      },
+      "tags": [
+        "multi-part"
+      ],
+      "output": null,
+      "cost_usd": 0.012,
+      "latency_ms": 6100,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    },
+    {
+      "model": "medium-model",
+      "repeat": 1,
+      "case_id": "q5",
+      "metrics": {
+        "correct": 1,
+        "grounded": 1
+      },
+      "tags": [
+        "not-in-documents"
+      ],
+      "output": null,
+      "cost_usd": 0.012,
+      "latency_ms": 6100,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    },
+    {
+      "model": "small-model",
+      "repeat": 1,
+      "case_id": "q1",
+      "metrics": {
+        "correct": 0.5,
+        "grounded": 1
+      },
+      "tags": [
+        "multi-part"
+      ],
+      "output": null,
+      "cost_usd": 0.003,
+      "latency_ms": 3100,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    },
+    {
+      "model": "small-model",
+      "repeat": 1,
+      "case_id": "q2",
+      "metrics": {
+        "correct": 1,
+        "grounded": 1
+      },
+      "tags": [
+        "factual"
+      ],
+      "output": null,
+      "cost_usd": 0.003,
+      "latency_ms": 3100,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    },
+    {
+      "model": "small-model",
+      "repeat": 1,
+      "case_id": "q3",
+      "metrics": {
+        "correct": 1,
+        "grounded": 1
+      },
+      "tags": [
+        "factual"
+      ],
+      "output": null,
+      "cost_usd": 0.003,
+      "latency_ms": 3100,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    },
+    {
+      "model": "small-model",
+      "repeat": 1,
+      "case_id": "q4",
+      "metrics": {
+        "correct": 0.5,
+        "grounded": 1
+      },
+      "tags": [
+        "multi-part"
+      ],
+      "output": null,
+      "cost_usd": 0.003,
+      "latency_ms": 3100,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    },
+    {
+      "model": "small-model",
+      "repeat": 1,
+      "case_id": "q5",
+      "metrics": {
+        "correct": 0,
+        "grounded": 0
+      },
+      "tags": [
+        "not-in-documents"
+      ],
+      "output": null,
+      "cost_usd": 0.003,
+      "latency_ms": 3100,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    },
+    {
+      "model": "large-model",
+      "repeat": 2,
+      "case_id": "q1",
+      "metrics": {
+        "correct": 1,
+        "grounded": 1
+      },
+      "tags": [
+        "multi-part"
+      ],
+      "output": null,
+      "cost_usd": 0.03,
+      "latency_ms": 9200,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    },
+    {
+      "model": "large-model",
+      "repeat": 2,
+      "case_id": "q2",
+      "metrics": {
+        "correct": 1,
+        "grounded": 1
+      },
+      "tags": [
+        "factual"
+      ],
+      "output": null,
+      "cost_usd": 0.03,
+      "latency_ms": 9200,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    },
+    {
+      "model": "large-model",
+      "repeat": 2,
+      "case_id": "q3",
+      "metrics": {
+        "correct": 1,
+        "grounded": 1
+      },
+      "tags": [
+        "factual"
+      ],
+      "output": null,
+      "cost_usd": 0.03,
+      "latency_ms": 9200,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    },
+    {
+      "model": "large-model",
+      "repeat": 2,
+      "case_id": "q4",
+      "metrics": {
+        "correct": 1,
+        "grounded": 1
+      },
+      "tags": [
+        "multi-part"
+      ],
+      "output": null,
+      "cost_usd": 0.03,
+      "latency_ms": 9200,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    },
+    {
+      "model": "large-model",
+      "repeat": 2,
+      "case_id": "q5",
+      "metrics": {
+        "correct": 1,
+        "grounded": 1
+      },
+      "tags": [
+        "not-in-documents"
+      ],
+      "output": null,
+      "cost_usd": 0.03,
+      "latency_ms": 9200,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    },
+    {
+      "model": "medium-model",
+      "repeat": 2,
+      "case_id": "q1",
+      "metrics": {
+        "correct": 0.5,
+        "grounded": 1
+      },
+      "tags": [
+        "multi-part"
+      ],
+      "output": null,
+      "cost_usd": 0.012,
+      "latency_ms": 6200,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    },
+    {
+      "model": "medium-model",
+      "repeat": 2,
+      "case_id": "q2",
+      "metrics": {
+        "correct": 1,
+        "grounded": 1
+      },
+      "tags": [
+        "factual"
+      ],
+      "output": null,
+      "cost_usd": 0.012,
+      "latency_ms": 6200,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    },
+    {
+      "model": "medium-model",
+      "repeat": 2,
+      "case_id": "q3",
+      "metrics": {
+        "correct": 1,
+        "grounded": 1
+      },
+      "tags": [
+        "factual"
+      ],
+      "output": null,
+      "cost_usd": 0.012,
+      "latency_ms": 6200,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    },
+    {
+      "model": "medium-model",
+      "repeat": 2,
+      "case_id": "q4",
+      "metrics": {
+        "correct": 0.5,
+        "grounded": 1
+      },
+      "tags": [
+        "multi-part"
+      ],
+      "output": null,
+      "cost_usd": 0.012,
+      "latency_ms": 6200,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    },
+    {
+      "model": "medium-model",
+      "repeat": 2,
+      "case_id": "q5",
+      "metrics": {
+        "correct": 1,
+        "grounded": 1
+      },
+      "tags": [
+        "not-in-documents"
+      ],
+      "output": null,
+      "cost_usd": 0.012,
+      "latency_ms": 6200,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    },
+    {
+      "model": "small-model",
+      "repeat": 2,
+      "case_id": "q1",
+      "metrics": {
+        "correct": 0.5,
+        "grounded": 1
+      },
+      "tags": [
+        "multi-part"
+      ],
+      "output": null,
+      "cost_usd": 0.003,
+      "latency_ms": 3200,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    },
+    {
+      "model": "small-model",
+      "repeat": 2,
+      "case_id": "q2",
+      "metrics": {
+        "correct": 1,
+        "grounded": 1
+      },
+      "tags": [
+        "factual"
+      ],
+      "output": null,
+      "cost_usd": 0.003,
+      "latency_ms": 3200,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    },
+    {
+      "model": "small-model",
+      "repeat": 2,
+      "case_id": "q3",
+      "metrics": {
+        "correct": 1,
+        "grounded": 1
+      },
+      "tags": [
+        "factual"
+      ],
+      "output": null,
+      "cost_usd": 0.003,
+      "latency_ms": 3200,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    },
+    {
+      "model": "small-model",
+      "repeat": 2,
+      "case_id": "q4",
+      "metrics": {
+        "correct": 0.5,
+        "grounded": 1
+      },
+      "tags": [
+        "multi-part"
+      ],
+      "output": null,
+      "cost_usd": 0.003,
+      "latency_ms": 3200,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    },
+    {
+      "model": "small-model",
+      "repeat": 2,
+      "case_id": "q5",
+      "metrics": {
+        "correct": 0,
+        "grounded": 0
+      },
+      "tags": [
+        "not-in-documents"
+      ],
+      "output": null,
+      "cost_usd": 0.003,
+      "latency_ms": 3200,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error": null,
+      "note": ""
+    }
+  ]
+}

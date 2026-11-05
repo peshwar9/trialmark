@@ -1,0 +1,12 @@
+{
+  "name": "contract-questions",
+  "version": "2026-11-05",
+  "description": "Questions about one fictional consulting contract, each with a reference answer written by a person.",
+  "cases": [
+    { "id": "q1", "input": "What is the notice period to terminate the agreement?", "reference": "Either party may terminate for convenience on sixty days' written notice, or immediately for a material breach not remedied within fifteen days of notice.", "tags": ["multi-part"] },
+    { "id": "q2", "input": "How long do the confidentiality obligations last after termination?", "reference": "Three years after termination.", "tags": ["factual"] },
+    { "id": "q3", "input": "How many managers can attend the programme?", "reference": "Up to forty managers.", "tags": ["factual"] },
+    { "id": "q4", "input": "What is the maximum liability, and are there exceptions?", "reference": "Liability is capped at the fees paid or payable under the statement of work, except for fraud, wilful misconduct or liability that cannot be limited by law.", "tags": ["multi-part"] },
+    { "id": "q5", "input": "Who is the client's parking contact?", "reference": "The contract does not say.", "tags": ["not-in-documents"] }
+  ]
+}
