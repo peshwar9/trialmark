@@ -105,7 +105,17 @@ def text_report(record: RunRecord, by_tag: bool = False) -> str:
         f"Run        {record.run_id}, {record.repeats} repeats, Trialmark {record.trialmark_version}",
     ]
     if record.judge:
-        lines.append(f"Judge      {record.judge.get('model', '?')}")
+        spent = record.judge.get("spent") or {}
+        cost = spent.get("cost_usd")
+        extra = (
+            f", {spent.get('calls', 0)} calls, "
+            + (f"${cost:.2f}" if isinstance(cost, (int, float)) else "cost unknown (no pricing)")
+            if spent
+            else ""
+        )
+        lines.append(f"Judge      {record.judge.get('model', '?')}{extra}")
+    lines.append(f"Spent      ${sum(r.cost_usd for r in record.results):.2f} on answers"
+                 + (f", ${cost:.2f} on the judge" if record.judge and isinstance((record.judge.get('spent') or {}).get('cost_usd'), (int, float)) else ""))
     lines += ["", *_table(summaries, metrics), ""]
     lines.append(
         "Ranges in brackets are the lowest and highest repeat. Treat differences inside them as no difference."

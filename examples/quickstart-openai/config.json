@@ -1,0 +1,39 @@
+{
+  "test_set": "questions.csv",
+  "pass_mark": { "metric": "correct", "tolerance_points": 5, "floors": { "grounded": 0.9 }, "choose": "cheapest" },
+  "repeats": 3,
+  "concurrency": 4,
+  "models": [
+    {
+      "id": "gpt-4o-mini",
+      "runner": "openai",
+      "settings": {
+        "documents": ["contract.md"],
+        "system": "Answer from the document only. If it does not contain the answer, say so.",
+        "pricing": { "input": 0.15, "output": 0.6, "cache_read": 0.075 }
+      }
+    },
+    {
+      "id": "gpt-5.6-sol",
+      "runner": "openai",
+      "settings": {
+        "documents": ["contract.md"],
+        "system": "Answer from the document only. If it does not contain the answer, say so.",
+        "pricing": { "input": 4.0, "output": 20.0, "cache_read": 0.4 }
+      }
+    }
+  ],
+  "scorers": [
+    {
+      "name": "judge",
+      "options": {
+        "model": "gpt-6-astra",
+        "provider": "openai",
+        "documents": ["contract.md"],
+        "pricing": { "input": 10.0, "output": 50.0, "cache_read": 1.0 }
+      }
+    }
+  ],
+  "environment": { "prices_as_of": "9 September 2026, OpenAI list prices in USD per million tokens, gpt-5.6-sol at promotional pricing until 21 November 2026; check current prices" },
+  "output": "record.json"
+}

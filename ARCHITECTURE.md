@@ -71,6 +71,15 @@ Built in:
   any model or system can be tested without writing a plugin package.
 - `echo` is a stand-in model for trying Trialmark and for tests.
 
+Optional on any runner:
+- `estimate_cost(model, case)` returns the rough cost of one call in US dollars, or None when it
+  cannot be known. `trialmark run` adds these up before anything runs.
+- `costs_money`: `trialmark run` asks for `--yes` before any run with a runner that costs money.
+  Runners are assumed to unless they set it to False, as `echo` does.
+- `prepare()` makes any client the runner needs. It is called once before the first call, so a
+  missing SDK or key stops the run with one message instead of failing every case, and a cost
+  estimate works before either is set up.
+
 ### Scorer
 
 Turns an output into metrics. Constructed once per run with its options.
@@ -80,6 +89,9 @@ class Scorer(Protocol):
     metrics: tuple[str, ...]      # every metric score() can return
     def score(self, case: Case, output: Any) -> dict[str, float]: ...   # each between 0 and 1
 ```
+
+Scorers may offer `estimate_cost(case)`, `costs_money` and `prepare()` as runners do; scorers
+are assumed not to cost money unless they say so, as the `judge` does.
 
 `metrics` lets the core score a failed call zero on every metric. A scorer that raises an
 error scores the case zero and leaves a note on the result. `score` may also return a short
@@ -126,6 +138,17 @@ Teams extend Trialmark by installing it from PyPI and adding plugins, not by for
   `trialmark-acme`, that declares an entry point (see "Writing a plugin" in the README).
 - **A change to the core:** open an issue or a pull request. A fork cannot publish under the name
   `trialmark` on PyPI, and its users stop receiving updates, so forking is the last resort.
+
+## Before and after a run
+
+`trialmark run` narrows the cases (`--limit`, `--only`), prints the plan and the estimate
+(`estimate.py`), and stops unless `--yes` is given when anything costs money. The record of a
+narrowed run holds the hash of the cases actually run. After the run, a scorer with a `spent`
+attribute, such as the judge, has its spend written into the record's `judge` entry.
+
+`trialmark init` copies a starter from `src/trialmark/templates/`; `examples/quickstart-*` are
+the same files, and a test keeps them identical. `trialmark judge-check` (`judgecheck.py`)
+writes a blind sample of answers for a person to grade and compares their grades with the run's.
 
 ## Configuration file
 

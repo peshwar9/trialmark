@@ -91,6 +91,12 @@ def run_trial(
     for m in models:
         if m.runner not in runners:
             raise ValueError(f"Model '{m.id}' names runner '{m.runner}', which was not provided.")
+    # Plugins that need a client make it now, so a missing SDK or key stops the run
+    # once, before any call, instead of failing every case.
+    for plugin in [*runners.values(), *scorers]:
+        prepare = getattr(plugin, "prepare", None)
+        if callable(prepare):
+            prepare()
     if judge is None:
         # A scorer that grades with a model describes its judge, for the record.
         judge = next((s.judge for s in scorers if isinstance(getattr(s, "judge", None), dict)), None)
@@ -110,6 +116,12 @@ def run_trial(
             record.add(result)
             if progress:
                 progress(result)
+    # A scorer that calls a model reports what it spent, so the record holds the
+    # judge's cost beside the answers' cost.
+    for s in scorers:
+        spent = getattr(s, "spent", None)
+        if isinstance(spent, dict) and record.judge is not None and getattr(s, "judge", None) is not None:
+            record.judge = {**record.judge, "spent": dict(spent)}
     return record
 
 
@@ -129,6 +141,10 @@ class Config:
     environment: dict[str, Any] = field(default_factory=dict)
     output: Path | None = None
     plugin_versions: dict[str, dict[str, str]] = field(default_factory=dict)
+
+    @property
+    def judge_names(self) -> list[str]:
+        return [s.judge["model"] for s in self.scorers if isinstance(getattr(s, "judge", None), dict) and "model" in s.judge]
 
 
 def load_config(path: str | Path) -> Config:
@@ -175,6 +191,34 @@ def load_config(path: str | Path) -> Config:
         output=base / data["output"] if data.get("output") else None,
         plugin_versions={"runners": {n: version_of("runner", n) for n in runners}, "scorers": scorer_versions},
     )
+
+
+def select_cases(config: Config, only: list[str] | None = None, limit: int | None = None) -> Config:
+    """Narrow a run to the named cases, then to the first `limit` of them.
+
+    The record then holds the hash of the cases actually run, so a trial run on a
+    few cases is never mistaken for a run of the whole set.
+    """
+    cases = list(config.test_set.cases)
+    if only:
+        missing = [i for i in only if i not in {c.id for c in cases}]
+        if missing:
+            raise ValueError(f"No case with the id {', '.join(missing)} in {config.test_set.name}.")
+        cases = [c for c in cases if c.id in only]
+    if limit is not None:
+        if limit < 1:
+            raise ValueError("--limit must be at least 1.")
+        cases = cases[:limit]
+    if len(cases) == len(config.test_set.cases):
+        return config
+    config.test_set = TestSet(
+        name=config.test_set.name,
+        version=config.test_set.version,
+        cases=tuple(cases),
+        description=config.test_set.description,
+        extra=config.test_set.extra,
+    )
+    return config
 
 
 def run_config(config: Config, progress: Callable[[Result], None] | None = None) -> RunRecord:

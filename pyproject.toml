@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "trialmark"
-version = "0.3.1"
+version = "0.4.0"
 description = "An open-source framework for evaluating language models and acceptance-testing them for your task: your own test cases, a pass mark fixed before the results, and a reproducible record of accuracy, cost and speed."
 readme = "README.md"
 license = "Apache-2.0"

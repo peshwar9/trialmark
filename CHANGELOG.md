@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.4.0, 5 November 2026
+
+- **Nothing is spent without `--yes`.** `trialmark run` prints the plan and a cost estimate for
+  each model and for the judge, and calls no paid model until `--yes` is given. Runs with only
+  the `echo` stand-in need no `--yes`. This changes how `trialmark run` behaves: scripts that
+  ran it without `--yes` must add it.
+- `--limit N` and `--only id,id` run part of the test set. The record holds the hash of the
+  cases actually run.
+- `trialmark init anthropic` and `trialmark init openai` write a ready-to-run starter: a
+  fictional contract, ten tagged questions and a configuration with current models and prices.
+  The same starters are in `examples/quickstart-anthropic` and `examples/quickstart-openai`.
+- The judge takes `pricing`, and the record and the report show what it spent.
+- `trialmark judge-check sample` and `score` measure how often the judge agrees with a person.
+- Runners and the judge make their client when the run starts, so an estimate works before an
+  SDK or key is set up, and a missing one stops the run once with a clear message.
+- Plugins may offer `estimate_cost`, `costs_money` and `prepare` (see ARCHITECTURE.md).
+
 ## 0.3.1, 5 November 2026
 
 - The README, the package description and the command's help describe Trialmark as a framework

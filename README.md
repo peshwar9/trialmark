@@ -47,13 +47,15 @@ Trialmark is at an early stage.
 | The test set format, with hashing and tags, read from JSON or CSV | A runner that tests a model inside Forge, with Forge's retrieval and rules applied |
 | The pass mark and the decision rule | Signed run records |
 | The run record, with the pass mark's hash, the judge and the plugins used | An HTML report with a chart of correctness against cost |
-| `trialmark run`, which runs every model on every case for every repeat | Logging runs to MLflow |
+| `trialmark run`, which estimates the cost, then runs every model on every case for every repeat once you add `--yes` | Logging runs to MLflow |
 | Runners that call Anthropic and OpenAI models directly, and a runner for a function of your own | |
 | A reference-answer judge, which grades an answer as correct, partly correct or incorrect, and whether it is grounded and whether it declined | |
 | An exact-match scorer and a field-by-field scorer for extraction | |
 | Plugins for runners, scorers, loaders and reports (see [ARCHITECTURE.md](ARCHITECTURE.md)) | |
 | Reports as text, Markdown or JSON, with ranges and the breakdown by tag | |
 | `trialmark gate` for pipelines, and JSON Schema files for every format | |
+| `trialmark init`, with ready-to-run starters for Anthropic and OpenAI models | |
+| `trialmark judge-check`, which measures how often the judge agrees with your own grades | |
 
 ## Install
 
@@ -69,21 +71,50 @@ pip install "trialmark[anthropic]"
 pip install "trialmark[openai]"
 ```
 
-## Try it
+## Quick start with your own key
 
-The `examples` folder holds a five-question test set and a configuration that compares three
+Two starters are ready to run: each tests two models on ten questions about a short fictional
+contract, with a third model as the judge. Bring an Anthropic or OpenAI key:
+
+```bash
+pip install "trialmark[anthropic]"
+export ANTHROPIC_API_KEY=...
+
+trialmark init anthropic                      # writes trialmark-anthropic/
+cd trialmark-anthropic
+trialmark run config.json                     # the plan and a cost estimate; spends nothing
+trialmark run config.json --limit 3 --yes     # three questions first
+trialmark run config.json --by-tag --yes      # the full test, about $1
+trialmark gate record.json --model claude-haiku-5-5
+```
+
+For OpenAI, use `"trialmark[openai]"`, `OPENAI_API_KEY` and `trialmark init openai`. The same
+starters are in [`examples/quickstart-anthropic`](examples/quickstart-anthropic) and
+[`examples/quickstart-openai`](examples/quickstart-openai), each with a README on making it
+yours: your questions, your documents, your models and your pass mark.
+
+**Nothing is spent without `--yes`.** `trialmark run` first prints the plan and an estimate
+for each model and for the judge. The estimate errs on the high side; the record holds what
+was actually spent, the judge's share included. `--limit N` runs the first N questions and
+`--only q3,q7` runs the ones named, so you can try a few before the full run.
+
+## Try it without a key
+
+The `examples` folder also holds a five-question test set and a configuration that compares
 stand-in models, so a run needs no API key. Run it from the repository's root folder:
 
 ```bash
 trialmark validate examples/testset.json
-trialmark run examples/config.json --by-tag
+trialmark run examples/config.json --by-tag --yes
 trialmark report examples/config-run-record.json --format markdown
 trialmark gate examples/config-run-record.json --model perfect-model
 trialmark plugins
 ```
 
-`examples/run-record.json` is an illustrative record of three made-up models whose scores are
-invented to show the format. They are not measurements of any real model.
+One of its models is a function of your own (`examples/my_model.py`), whose cost Trialmark
+cannot know, which is why that run also asks for `--yes`. `examples/run-record.json` is an
+illustrative record of three made-up models whose scores are invented to show the format.
+They are not measurements of any real model.
 
 ## Compare models on your own questions
 
@@ -113,7 +144,8 @@ third model grade every answer against your reference answers:
 
 ```bash
 export ANTHROPIC_API_KEY=...
-trialmark run config.json --by-tag
+trialmark run config.json                 # the estimate
+trialmark run config.json --by-tag --yes  # the run
 ```
 
 Every run calls the models for real and costs money: here, two models, three repeats and every
@@ -124,10 +156,15 @@ A few things to know:
 - **Prices** are yours to give, in US dollars per million tokens, because they change. Check
   your provider's current prices. A model without prices reports a cost of zero, with a note on
   each result.
-- **The judge** works best when it is not one of the models under test. Check it against a
-  person's grades on part of the set before relying on it. Its model, the documents it read and
-  a hash of its rules are kept in the record. `rules_file` replaces the built-in rules with your
+- **The judge** works best when it is not one of the models under test. Give it `pricing` too,
+  so its spend is estimated and recorded. Its model, the documents it read, a hash of its rules
+  and what it spent are kept in the record. `rules_file` replaces the built-in rules with your
   own.
+- **Check the judge against your own grades** before relying on it:
+  `trialmark judge-check sample record.json --test-set questions.csv` writes 20 answers to
+  `grades.csv` without the judge's verdicts; fill in `your_verdict` with correct, partial or
+  incorrect, then `trialmark judge-check score record.json grades.csv` shows how often the judge
+  agreed with you and lists each disagreement.
 - **OpenAI models** use `"runner": "openai"`, and the judge takes `"provider": "openai"`.
 - **Your own system**, such as your own retrieval pipeline, plugs in through the `python` runner:
   write a function that takes the model's name, the question and the settings, and returns the

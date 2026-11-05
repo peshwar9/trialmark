@@ -1,0 +1,11 @@
+id,input,reference,tags
+q1,How long do the confidentiality obligations last?,During the term and for three years after the agreement ends.,factual
+q2,What is the total fee under the agreement?,"A fixed fee of USD 90,000.",factual
+q3,Which law governs the agreement?,"The laws of England and Wales, with the courts of London having exclusive jurisdiction.",factual
+q4,When must invoices be paid?,"Within 30 days of the invoice date, with interest of 1% per month on late amounts.",factual
+q5,How can either party end the agreement?,"For convenience on sixty days' written notice, or immediately by written notice for a material breach not remedied within fifteen days of being told.",multi-part
+q6,"What is the liability cap, and when does it not apply?","Each party's liability is capped at the fees paid in the twelve months before the claim, and indirect or consequential loss is excluded. The cap does not apply to fraud or wilful misconduct.",multi-part
+q7,Who owns the materials and what may Lumen do with them?,"Northbridge keeps its pre-existing and independent materials. Once the fee is paid in full, Lumen gets a perpetual, non-exclusive licence to use the delivered materials for internal purposes only.",multi-part
+q8,How much is each fee instalment?,"USD 30,000: the USD 90,000 fee in three equal instalments.",calculation
+q9,Who is Lumen's project manager for the engagement?,The agreement does not say.,not-in-documents
+q10,What happens if a workshop is cancelled?,The agreement does not say.,not-in-documents

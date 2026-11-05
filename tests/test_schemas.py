@@ -35,7 +35,7 @@ def test_examples_match_the_schemas(tmp_path, monkeypatch):
         validator("run-record").validate(json.loads(record.read_text()))
     monkeypatch.chdir(ROOT)
     out = tmp_path / "r.json"
-    assert main(["run", str(ROOT / "examples" / "config.json"), "--output", str(out)]) == 0
+    assert main(["run", str(ROOT / "examples" / "config.json"), "--output", str(out), "--yes"]) == 0
     validator("run-record").validate(json.loads(out.read_text()))
 
 

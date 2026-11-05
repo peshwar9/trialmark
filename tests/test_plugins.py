@@ -193,7 +193,7 @@ def test_config_run_and_reports(tmp_path, monkeypatch):
 def test_cli_run(tmp_path, monkeypatch, capsys):
     monkeypatch.chdir(ROOT)
     out = tmp_path / "r.json"
-    assert main(["run", str(EXAMPLES / "config.json"), "--output", str(out)]) == 0
+    assert main(["run", str(EXAMPLES / "config.json"), "--output", str(out), "--yes"]) == 0
     assert main(["gate", str(out), "--model", "perfect-model"]) == 0
     assert main(["gate", str(out), "--model", "weak-on-multi-part"]) == 1
     assert main(["plugins"]) == 0

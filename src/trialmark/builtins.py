@@ -34,6 +34,12 @@ class EchoRunner:
       cost_usd: the cost reported for each case (default 0).
     """
 
+    # A stand-in: it calls nothing, so a run of it needs no --yes.
+    costs_money = False
+
+    def estimate_cost(self, model: ModelEntry, case: Case) -> float | None:
+        return float(model.settings.get("cost_usd", 0))
+
     def run(self, model: ModelEntry, case: Case) -> RunOutput:
         s = model.settings
         if set(s.get("wrong_tags", [])) & set(case.tags):
