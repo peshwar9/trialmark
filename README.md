@@ -63,6 +63,9 @@ changes, not deliberate tampering. Signed records are planned.
 
 Trialmark runs on your own machines. Your test sets, reference answers and records stay with you.
 
+Read the launch post, [Trialmark: acceptance tests for the AI model you are about to ship](docs/blog/2026-11-05-trialmark-0-5.md),
+for why it exists and how it differs from other evaluation tools.
+
 ## Where it comes from
 
 Trialmark was spun out of the model benchmark in [Forge](https://www.forgeprivate.com), a
@@ -143,6 +146,18 @@ like, and how to set it up.
 | Your own system, such as your own retrieval pipeline | any of the above | see [docs/tasks.md](docs/tasks.md) |
 
 Conversations and agents (several turns, tool calls) are not supported yet.
+
+## Which models
+
+Any model you can call from Python. Claude and OpenAI models have built-in runners; every other
+model, such as Gemini, Mistral, open-weight models run locally with Ollama or vLLM, your
+fine-tuned models, classic text classifiers, or your own system built on models, takes a short
+Python function. What matters is not how a model is built but what it returns: today Trialmark
+marks text, JSON, labels and numbers. Other outputs need their own scorers first: boxes and masks
+from detection models, transcripts from speech-to-text, rankings from embedding models, and
+generated images.
+[docs/models.md](docs/models.md) says what is supported and what each new kind of model would
+need.
 
 **Nothing is spent without `--yes`.** `trialmark run` first prints the plan and an estimate
 for each model and for the judge. The estimate errs on the high side; the record holds what

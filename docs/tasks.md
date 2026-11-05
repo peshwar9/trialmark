@@ -15,7 +15,8 @@ trialmark run config.json --limit 3 --yes      # a few cases first
 trialmark run config.json --by-tag --yes       # the full test
 ```
 
-The same starters are in [`examples/starters/`](../examples/starters) to read or copy.
+The same starters are in [`examples/starters/`](../examples/starters) to read or copy. For which
+models Trialmark can call, see [models.md](models.md).
 
 | Kind of task | Examples | Marked by | Needs a judge model | Starter |
 |---|---|---|---|---|
