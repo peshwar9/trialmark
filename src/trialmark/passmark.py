@@ -97,6 +97,9 @@ def decide(pass_mark: PassMark, summaries: list[Any]) -> Decision:
             reasons.append(
                 f"{pass_mark.metric} {m.mean:.1%} is more than {pass_mark.tolerance_points:g} points below the best {best:.1%}"
             )
+        # Failed calls leave the scores incomplete, so the model cannot pass.
+        if getattr(s, "errors", 0):
+            reasons.append(f"{s.errors} calls failed")
         for name, floor in pass_mark.floors.items():
             fm = s.metrics.get(name)
             if fm is None:

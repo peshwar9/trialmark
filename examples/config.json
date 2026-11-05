@@ -1,0 +1,13 @@
+{
+  "test_set": "testset.json",
+  "pass_mark": { "metric": "correct", "tolerance_points": 10, "choose": "cheapest" },
+  "repeats": 2,
+  "concurrency": 4,
+  "models": [
+    { "id": "perfect-model", "runner": "echo", "settings": { "cost_usd": 0.03 } },
+    { "id": "weak-on-multi-part", "runner": "echo", "settings": { "wrong_tags": ["multi-part"], "cost_usd": 0.003 } },
+    { "id": "my-function", "runner": "python", "settings": { "callable": "examples/my_model.py:answer" } }
+  ],
+  "scorers": ["exact-match"],
+  "output": "config-run-record.json"
+}

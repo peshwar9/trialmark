@@ -24,6 +24,9 @@ class ModelEntry:
     id: str
     provider: str = ""
     settings: dict[str, Any] = field(default_factory=dict)
+    # The runner plugin that calls this model; empty when results were produced
+    # outside Trialmark.
+    runner: str = ""
 
 
 @dataclass
@@ -54,6 +57,8 @@ class RunRecord:
     trialmark_version: str = __version__
     judge: dict[str, Any] | None = None
     environment: dict[str, Any] = field(default_factory=dict)
+    # The runners and scorers used, with their versions: {"runners": {...}, "scorers": {...}}.
+    plugins: dict[str, dict[str, str]] = field(default_factory=dict)
     results: list[Result] = field(default_factory=list)
 
     @classmethod
@@ -118,6 +123,7 @@ def parse_record(data: dict[str, Any]) -> RunRecord:
             trialmark_version=str(data.get("trialmark_version", "")),
             judge=data.get("judge"),
             environment=dict(data.get("environment", {})),
+            plugins={k: dict(v) for k, v in dict(data.get("plugins", {})).items()},
             results=results,
         )
     except KeyError as e:

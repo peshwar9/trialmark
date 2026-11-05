@@ -14,3 +14,5 @@ jobs:
       - run: pip install -e ".[dev]"
       - run: pytest -q
       - run: trialmark report examples/run-record.json --by-tag
+      - run: trialmark run examples/config.json --by-tag
+      - run: trialmark gate examples/config-run-record.json --model perfect-model

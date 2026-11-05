@@ -18,27 +18,31 @@
     {
       "id": "large-model",
       "provider": "example",
-      "settings": {}
+      "settings": {},
+      "runner": ""
     },
     {
       "id": "medium-model",
       "provider": "example",
-      "settings": {}
+      "settings": {},
+      "runner": ""
     },
     {
       "id": "small-model",
       "provider": "example",
-      "settings": {}
+      "settings": {},
+      "runner": ""
     }
   ],
   "repeats": 3,
   "run_id": "example",
-  "trialmark_version": "0.1.0",
+  "trialmark_version": "0.2.0",
   "judge": {
     "model": "example-judge",
     "prompt_version": "1"
   },
   "environment": {},
+  "plugins": {},
   "results": [
     {
       "model": "large-model",
