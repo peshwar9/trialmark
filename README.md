@@ -9,24 +9,56 @@ Evaluation measures how models perform. Acceptance testing decides whether a mod
 enough for the task, against a rule written down before the results are seen, and records that
 decision so anyone can check it. Trialmark does both.
 
-Choosing a language model is a trade between accuracy, cost and speed. Trialmark makes that
-choice systematic:
+## What you can do with Trialmark
 
-1. **Your own test set.** Cases from your own work, each with a reference answer written by a
-   person and tagged by kind, such as "factual" or "multi-part". The set is hashed, so a later
-   run can prove it used exactly the same cases.
-2. **A pass mark set before the run.** For example: "choose the cheapest model within 3 points
-   of the best on correctness, as long as at least 95% of its answers are grounded". The rule
-   is stored with its hash and the time it was set, so an accidental change after the results
-   are in is caught. Signed records, planned, will also make a deliberate change detectable.
-3. **Repeats, with the range shown.** Models do not give the same answer every time. Each model
-   runs several times, and the report shows the lowest and highest result so that a difference
-   inside the range is read as no difference.
-4. **A report by kind of case.** A small model may be as good as a large one on single facts
-   and worse on multi-part questions. The breakdown by tag shows where.
-5. **A run record and a release gate.** Every run writes one JSON file with the test set's hash,
-   the models and their settings, the judge, the pass mark and every result. `trialmark gate`
-   exits with 0 or 1, so a pipeline can refuse a model change that fails the pass mark.
+You are building something with an AI model and have to choose one. A bigger model is usually
+more accurate but costs more and is slower; a smaller one is cheaper, but is it good enough for
+your task? Trialmark answers that with evidence from your own questions, not a leaderboard.
+
+**1. Try it in two minutes with a ready-made example.** `trialmark init anthropic` or
+`trialmark init openai` gives you a small working project: a short made-up contract, ten
+questions about it with the right answers, and a settings file. Add your API key and run it. Two
+models answer the questions and a third model grades their answers.
+
+**2. Test models on your own questions.** Put your questions and their right answers in a
+spreadsheet saved as CSV, label each question with its kind if you like ("simple fact", "needs
+several parts"), and name the models you want to compare. Trialmark asks every model every
+question, several times over, because models do not answer the same way every time.
+
+**3. Decide what "good enough" means before you see the results.** You write the rule down
+first, for example "pick the cheapest model that scores within 3 points of the best one".
+Trialmark saves it before any model runs, so nobody can quietly move the goalposts after seeing
+the numbers. Then it applies your rule and names the winner.
+
+**4. See accuracy, cost and speed side by side.** For each model: how often it was right, partly
+right or wrong; whether its answers stuck to your documents or added things that are not there;
+whether it correctly said "I don't know" when the answer was not available; what it cost; and how
+long it took. The results are also broken down by kind of question. That is often the most
+useful part: a cheap model may be perfect on simple facts and slip on harder, multi-part
+questions.
+
+**5. Know the cost before you spend anything.** A run first shows the plan and an estimated bill,
+and spends nothing. Models are called only when you add `--yes`, and `--limit 3` tries the first
+three questions before the full run.
+
+**6. Let a model grade the answers, then check the grader.** Free-text answers cannot be marked
+by matching text exactly, so Trialmark uses an AI model as the judge, comparing each answer with
+your right answer. To know whether to trust it, `trialmark judge-check` gives you a sample of
+answers to mark yourself, without showing the judge's marks, and tells you how often you agreed.
+
+**7. Keep a record anyone can check, and use it to block bad changes.** Every run saves one file
+holding exactly what was tested: the questions, with a fingerprint that proves they did not
+change, the models, your rule, every answer and every cost. `trialmark gate` turns that into a
+pass or a fail, so your build pipeline can refuse a model switch that does not meet your rule.
+
+**8. Test your own system, not just a bare model.** If your app does more than call a model, for
+example searching your own documents first, write a small Python function that calls your app,
+and Trialmark tests the whole thing. You can also add your own pieces, such as a new model
+provider, a new way of grading or a new file format, without forking Trialmark.
+
+**What it does not do yet.** There is no web dashboard or HTML report; reports are text,
+Markdown or JSON. And it cannot yet prove who ran a test: the fingerprints catch accidental
+changes, not deliberate tampering. Signed records are planned.
 
 Trialmark runs on your own machines. Your test sets, reference answers and records stay with you.
 
@@ -44,10 +76,10 @@ Trialmark is at an early stage.
 
 | Built | Planned |
 |---|---|
-| The test set format, with hashing and tags, read from JSON or CSV | A runner that tests a model inside Forge, with Forge's retrieval and rules applied |
-| The pass mark and the decision rule | Signed run records |
-| The run record, with the pass mark's hash, the judge and the plugins used | An HTML report with a chart of correctness against cost |
-| `trialmark run`, which estimates the cost, then runs every model on every case for every repeat once you add `--yes` | Logging runs to MLflow |
+| The test set format, with hashing and tags, read from JSON or CSV | Signed run records |
+| The pass mark and the decision rule | An HTML report with a chart of correctness against cost |
+| The run record, with the pass mark's hash, the judge and the plugins used | Logging runs to MLflow |
+| `trialmark run`, which estimates the cost, then runs every model on every case for every repeat once you add `--yes` | |
 | Runners that call Anthropic and OpenAI models directly, and a runner for a function of your own | |
 | A reference-answer judge, which grades an answer as correct, partly correct or incorrect, and whether it is grounded and whether it declined | |
 | An exact-match scorer and a field-by-field scorer for extraction | |
