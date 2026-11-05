@@ -67,6 +67,7 @@ Trialmark runs on your own machines. Your test sets, reference answers and recor
 
 | Guide | What it covers |
 |---|---|
+| [What makes Trialmark different](docs/design.md) | The design decisions: the decision registered before the results, one method for every task with plugins for the marking, practice from experimental work, and a record others can check |
 | [What you can test](docs/tasks.md) | Each kind of task (questions over documents, extraction, classification, writing, calculation, structured output, your own system): how it is marked, what your test cases look like, and its starter |
 | [Which models](docs/models.md) | The models Trialmark can call today, what a new kind of model would need, and how to add one with plugins, with a worked example for speech to text |
 | [Deployment](docs/deployment.md) | Where Trialmark runs (a laptop, a build pipeline, a schedule, your own servers), what it reads and writes, and when testing a model needs servers or storage |

@@ -1,5 +1,7 @@
 # Trialmark architecture
 
+For why it is built this way, see [What makes Trialmark different](docs/design.md).
+
 Trialmark has a small fixed core and four customisation points. The core is what makes two runs
 comparable, so it does not change from one team to the next. Everything that touches a model,
 a file format or a way of scoring is a plugin.
