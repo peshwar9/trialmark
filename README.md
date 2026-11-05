@@ -63,8 +63,16 @@ changes, not deliberate tampering. Signed records are planned.
 
 Trialmark runs on your own machines. Your test sets, reference answers and records stay with you.
 
-Read the launch post, [Trialmark: acceptance tests for the AI model you are about to ship](docs/blog/2026-11-05-trialmark-0-5.md),
-for why it exists and how it differs from other evaluation tools.
+## Documentation
+
+| Guide | What it covers |
+|---|---|
+| [What you can test](docs/tasks.md) | Each kind of task (questions over documents, extraction, classification, writing, calculation, structured output, your own system): how it is marked, what your test cases look like, and its starter |
+| [Which models](docs/models.md) | The models Trialmark can call today, and what a new kind of model, such as a vision or speech model, would need |
+| [Starters](examples/starters) | Ten ready-to-run examples, one per kind of task, for Anthropic or OpenAI models |
+| [Architecture](ARCHITECTURE.md) | How a run works, what is fixed in the core, and how to write a plugin |
+| [Launch post](docs/blog/2026-11-05-trialmark-0-5.md) | Why Trialmark exists and how it differs from other evaluation tools |
+| [Changelog](CHANGELOG.md) and [Releasing](RELEASING.md) | What changed in each version, and how a release is published |
 
 ## Where it comes from
 

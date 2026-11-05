@@ -302,3 +302,6 @@ is not one of the models under test, since a judge can favour its own answers.
   can turn into a model call.
 
 If you need one of these, [open an issue](https://github.com/peshwar9/trialmark/issues).
+
+**See also:** [Which models](models.md) for the models Trialmark can call, and
+[ARCHITECTURE.md](../ARCHITECTURE.md) for writing your own scorer.

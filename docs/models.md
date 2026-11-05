@@ -55,3 +55,6 @@ If you need one of these, [open an issue](https://github.com/peshwar9/trialmark/
 the runner and scorer as plugins: [ARCHITECTURE.md](../ARCHITECTURE.md) and the README's
 "Writing a plugin" section show how, and Trialmark finds an installed plugin without any change
 to the core.
+
+**See also:** [What you can test](tasks.md) for each kind of task and its scorer, and the
+[starters](../examples/starters) for ready-to-run examples.
