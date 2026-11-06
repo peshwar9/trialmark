@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.1, 6 November 2026
+
+- Documentation only, so the package page shows the current README: a Documentation section
+  listing every guide, "Which models", and new guides on deployment (`docs/deployment.md`), on
+  adding a new kind of model with plugins (`docs/models.md`), and on what makes Trialmark
+  different (`docs/design.md`), with the launch post in `docs/blog/`. No change to behaviour or
+  formats.
+
 ## 0.5.0, 5 November 2026
 
 - **Every common kind of task can be tested**, with a guide, `docs/tasks.md`, covering

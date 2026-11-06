@@ -1,6 +1,6 @@
 """Trialmark: an open-source framework for evaluating language models and acceptance-testing them for your task."""
 
-__version__ = "0.5.0"
+__version__ = "0.5.1"
 
 from .passmark import Decision, PassMark, decide, parse_pass_mark  # noqa: E402
 from .record import ModelEntry, Result, RunRecord, load_record, parse_record  # noqa: E402
