@@ -1,21 +1,33 @@
 # Releasing Trialmark
 
 Trialmark is published to PyPI by trusted publishing from `.github/workflows/publish.yml`, through
-the GitHub environment `pypi`. No PyPI token exists or is needed.
+the GitHub environment `pypi`. No PyPI token exists or is needed. Pushing a version tag starts
+the publish.
 
-1. Raise the version number in both `pyproject.toml` and `src/trialmark/__init__.py`. They must
-   match, because the workflow refuses a tag that differs from the package version.
+1. Raise the version number in both `pyproject.toml` and `src/trialmark/__init__.py`, and add a
+   `## <version>, <date>` entry at the top of `CHANGELOG.md`.
 2. Run the tests with `pytest -q`.
-3. Commit, then push to `main`.
-4. Tag the commit with the version and push the tag:
+3. Commit, push to `main`, and wait for the tests on GitHub to pass.
+4. Run the release script, from any folder:
 
    ```bash
-   git tag v0.2.0
-   git push origin v0.2.0
+   ~/claude/trialmark/scripts/release.sh --dry-run   # checks everything, tags nothing
+   ~/claude/trialmark/scripts/release.sh             # checks, asks, then tags and pushes
    ```
 
-5. The workflow runs the tests, checks the tag, builds the package and publishes it. Check the
-   run with `gh run list --workflow publish.yml --limit 1`, and the release at
+   It works in the repository it belongs to, whatever folder you run it from, so a tag cannot
+   land in another repository. Before tagging it checks that:
+
+   - the repository's remote is `peshwar9/trialmark`;
+   - you are on `main`, with nothing uncommitted, and level with GitHub;
+   - the version is the same in `pyproject.toml` and `src/trialmark/__init__.py`;
+   - the tag does not exist yet, here or on GitHub;
+   - `CHANGELOG.md` has an entry for the version;
+   - the tests passed on GitHub for this commit (when `gh` is installed).
+
+5. The publish workflow runs the tests, checks the tag matches the package version, builds the
+   package and publishes it. Check the run with
+   `gh run list -R peshwar9/trialmark --workflow publish.yml --limit 1`, and the release at
    https://pypi.org/project/trialmark/.
 
 A version number can be published to PyPI only once. If a release is wrong, fix it and publish
